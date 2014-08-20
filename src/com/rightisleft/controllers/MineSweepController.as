@@ -58,6 +58,12 @@ package com.rightisleft.controllers
 			}
 			
 			_gridView.addEventListener(MouseEvent.CLICK, onClick);
+			
+			//Show All
+//			for each(var atile:TileVO in _mineModel.collectionOfTiles)
+//			{
+//				atile.state = TileVO.STATE_CLEARED;
+//			}
 		}
 		
 		private function updateNieghbors(tile:TileVO):void
@@ -69,8 +75,9 @@ package com.rightisleft.controllers
 			{			
 				if(cell != null)
 				{
-					nextTile = _mineModel.getItemByID(cell.id);				
-					nextTile.incrementNeighbors();
+					nextTile = _mineModel.getItemByID(cell.id);		
+					if(nextTile.type != TileVO.TYPE_MINE)
+						nextTile.incrementNeighbors();
 				}
 			}	
 			
@@ -134,7 +141,8 @@ package com.rightisleft.controllers
 			cell.bitmapData = newData; 	
 		}
 		
-		private function getNieghborTile(tile:TileVO, direction:String):TileVO		{
+		private function getNieghborTile(tile:TileVO, direction:String):TileVO		
+		{
 			
 			var neighborCell:GridCellVO; 
 			var originCell:GridCellVO = _gridModel.getCellByID(tile.id);
@@ -183,10 +191,14 @@ package com.rightisleft.controllers
 			
 			node[replacementProperty] = replacementValue;
 			
-			for each(var direction:String in _directions) {
+			for each(var direction:String in _directions) 
+			{
 				_nextTile = getNieghborTile(node, direction);
-				if(_nextTile)
-				floodFill(_nextTile, currentProperty, currentValue, replacementValue, replacementProperty);
+				
+				if(_nextTile) 
+				{
+					floodFill(_nextTile, currentProperty, currentValue, replacementValue, replacementProperty);	
+				}
 			}
 			
 		}
