@@ -2,6 +2,7 @@ package
 {
 	import com.rightisleft.controllers.GridController;
 	import com.rightisleft.controllers.MineSweepController;
+	import com.rightisleft.models.MineSweepModel;
 	import com.rightisleft.views.GridView;
 	import com.rightisleft.vos.GridVO;
 	
@@ -28,9 +29,10 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			
+			var mineModel:MineSweepModel  = new MineSweepModel();
 			
 			//Grid Setup
-			_gridModel = new GridVO();	
+			_gridModel = new GridVO(mineModel.collumns,mineModel.rows, mineModel.tileHeight, mineModel.tileWidth);	
 			
 			_gridView = new GridView();
 			_gridView.init(this);
@@ -38,11 +40,12 @@ package
 			_gridController = new GridController();
 			_gridController.init(_gridModel, _gridView);
 			
+			_mineSweepController = new MineSweepController(_gridModel, _gridView, mineModel);			
+
 			this.addChild(_gridView);
 			
 			
 			//Game Setup
-			_mineSweepController = new MineSweepController(_gridModel, _gridView);			
 			
 		}
 	}

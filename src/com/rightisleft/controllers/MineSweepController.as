@@ -8,6 +8,7 @@ package com.rightisleft.controllers
 	
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
@@ -17,7 +18,7 @@ package com.rightisleft.controllers
 	public class MineSweepController
 	{
 		private var _view:Sprite = new Sprite;
-		private var _mineModel:MineSweepModel = new MineSweepModel();
+		private var _mineModel:MineSweepModel
 		
 		private var _gridView:GridView;
 		private var _gridModel:GridVO;
@@ -25,9 +26,10 @@ package com.rightisleft.controllers
 		private var _tileView:BitmapData;
 		private var _textField:TextField;
 		
-		public function MineSweepController(gridModel:GridVO, gridView:GridView)
+		public function MineSweepController(gridModel:GridVO, gridView:GridView, mineModel:MineSweepModel)
 		{
 			
+			_mineModel = mineModel;
 			_gridView = gridView;
 			_gridModel = gridModel;
 			_textField = new TextField();
@@ -37,6 +39,8 @@ package com.rightisleft.controllers
 			{
 				var tile:TileVO = new TileVO();
 				tile.id = cell.id;
+				tile.addEventListener(Event.CHANGE, onChange);
+				
 				_mineModel.collectionOfTiles.push ( tile );
 			}
 			
@@ -66,7 +70,7 @@ package com.rightisleft.controllers
 				if(cell != null)
 				{
 					nextTile = _mineModel.getItemByID(cell.id);				
-					nextTile.incrementNeighbors()
+					nextTile.incrementNeighbors();
 				}
 			}	
 			
@@ -98,33 +102,93 @@ package com.rightisleft.controllers
 		private function onClick(event:MouseEvent):void {
 			var cell:GridCellVO = _gridModel.getCellByLocalCoardinate(event.localX, event.localY);
 			var tileVO:TileVO = _mineModel.getItemByID(cell.id);
+			clearTile(tileVO, cell);
 			
-			tileVO.printDangerEdges();
-						
-			var aColor:uint;
-			_textField.text = "";
-			
-			if(tileVO.type == TileVO.TYPE_MINE)
+			if(tileVO.type == TileVO.TYPE_OPEN)
 			{
-				aColor = 0xFFF80000;
-			} else if (tileVO.danger_edges > 0) {
-				aColor = 0xFFFFC809;
-				_textField.text = tileVO.danger_edges + "";
-			} else {
-				aColor = 0xFF336600;
+				floodFill(tileVO, 'type', TileVO.TYPE_OPEN, TileVO.STATE_CLEARED, 'state');
 			}
+		}
 		
+		private function onChange(event:Event):void {
+			var tileVO:TileVO = event.currentTarget as TileVO
+			var cell:GridCellVO = _gridModel.getCellByID(tileVO.id);
+			clearTile(tileVO, cell);
+		}
+		
+		private function clearTile(tileVO:TileVO, cell:GridCellVO):void
+		{
+			tileVO.state == TileVO.STATE_CLEARED;
+				
 			//blit text
+			_textField.text = tileVO.text
 			var snapshot:BitmapData = new BitmapData(_textField.width, _textField.height, true, 0x00000000);
-			snapshot.draw(_textField, new Matrix());
+			snapshot.draw(_textField, new Matrix() );
 			
 			//compose to square
-			var newData:BitmapData = new BitmapData(_mineModel.tileWidth, _mineModel.tileHeight, false, aColor);
+			var newData:BitmapData = new BitmapData(_mineModel.tileWidth, _mineModel.tileHeight, false, tileVO.color);
 			var rect:Rectangle = new Rectangle(0, 0, _textField.width, _textField.height);
 			var aPoint:Point = new Point();
 			newData.copyPixels(snapshot, rect, aPoint);
 			
-			cell.bitmapData = newData; 						
+			cell.bitmapData = newData; 	
+		}
+		
+		private function getNieghborTile(tile:TileVO, direction:String):TileVO		{
+			
+			var neighborCell:GridCellVO; 
+			var originCell:GridCellVO = _gridModel.getCellByID(tile.id);
+			
+			switch(direction) {
+				case "n":
+					neighborCell = _gridModel.getCellToNorthOf(originCell);
+				break;
+				
+				case "s":
+					neighborCell = _gridModel.getCellToSouthOf(originCell);
+					break;
+				
+				case "e":
+					neighborCell = _gridModel.getCellToEastOf(originCell);
+					break;
+				case "w":
+					neighborCell = _gridModel.getCellToWestOf(originCell);
+					break;
+			}
+			
+			if(neighborCell)
+			{
+				var nextTile:TileVO = _mineModel.getItemByID(neighborCell.id);
+				return nextTile;
+			} else {
+				return null
+			}
+		}
+		
+		private var _directions:Array = ['w', 'e', 's', 'n']
+		private var _nextTile:TileVO;
+		private function floodFill(node:TileVO, currentProperty:String, currentValue:int, replacementValue:int, replacementProperty:String):void
+		{
+			_nextTile = null;
+			
+			if(!node)
+			{
+				return;
+			}
+			
+			if(node[replacementProperty] == replacementValue || node[currentProperty] != currentValue)
+			{
+				return;
+			}
+			
+			node[replacementProperty] = replacementValue;
+			
+			for each(var direction:String in _directions) {
+				_nextTile = getNieghborTile(node, direction);
+				if(_nextTile)
+				floodFill(_nextTile, currentProperty, currentValue, replacementValue, replacementProperty);
+			}
+			
 		}
 	}
 }

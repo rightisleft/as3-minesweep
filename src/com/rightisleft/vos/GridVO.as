@@ -1,6 +1,7 @@
 package com.rightisleft.vos
 {	
 	import flash.geom.Point;
+	import flash.utils.Dictionary;
 
 	public class GridVO
 	{
@@ -12,13 +13,8 @@ package com.rightisleft.vos
 		private var _cellHeight:int;
 		private var _cellWidth:int;
 		
-		public function GridVO()
+		public function GridVO(columns:int, rows:int, cellHeight:int, cellWidth:int)
 		{
-
-		}
-		
-		public function generateNewGrid(columns:int, rows:int, cellHeight:int, cellWidth:int):void {
-			
 			_columns = [];
 			_rowCount = rows;
 			_columnCount = columns;
@@ -26,13 +22,21 @@ package com.rightisleft.vos
 			_cellHeight = cellHeight;
 			_cellWidth = cellWidth;
 			
+			draw();
+		}
+		
+		//move this into the view?
+		//respond to change event
+		
+		public function draw():void {
+			
 			//turn this into a recursive function?
-			for(var i:int = 0; i < rows; i++) {
+			for(var i:int = 0; i < _rowCount; i++) {
 				
 				var aColumn:Array = [];
 				var _previousCell:GridCellVO
 
-				for (var j:int = 0; j < columns; j++) 
+				for (var j:int = 0; j < _columnCount; j++) 
 				{					
 					if(j == 0) {
 						if(i > 0) {
@@ -167,8 +171,17 @@ package com.rightisleft.vos
 			return null;
 		}
 		
+		//Todo: create hash map
+		private var _hash:Dictionary = new Dictionary();
 		public function getCellByID(id:String):GridCellVO {
+			
+			if(_hash[id]) {
+				return _hash[id];
+			}
+			
 			for each(var cell:GridCellVO in _collection) {
+				_hash[cell.id] = cell;
+				
 				if(cell.id == id)
 				{
 					return cell;

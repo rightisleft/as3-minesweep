@@ -1,26 +1,25 @@
 package com.rightisleft.vos
 {
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	
 
-	public class TileVO
+	public class TileVO extends EventDispatcher
 	{
-		public static const TYPE_OPEN:int = 0;
-		public static const TYPE_MINE:int = 1;
-		public static const TYPE_ADJACENT_ONE:int = 2;
-		public static const TYPE_ADJACENT_TWO:int = 3;
-		public static const TYPE_ADJACENT_THREE:int = 4;
-		public static const TYPE_ADJACENT_FOUR:int = 5;
-		public static const TYPE_ADJACENT_FIVE:int = 6;
-		public static const TYPE_ADJACENT_SIZ:int = 7;
-		public static const TYPE_ADJACENT_SEVEN:int = 8;
-		public static const TYPE_ADJACENT_EIGHT:int = 9;
 		
 		public static const STATE_LIVE:int = 0;
-		public static const STATE_SPENT:int = 1;
-		public static const STATE_CLEARED:int = 2;
+		public static const STATE_CLEARED:int = 1;
+		public static const STATE_FLAGGED:int = 2;
+		
+		
+		public static const TYPE_OPEN:int = 0;
+		public static const TYPE_MINE:int = 1;
+		public static const TYPE_RISKY:int = 2;
+		
+
 		
 		public var type:int = -1;
-		public var state:int;
+		private var _state:int;
 		public var id:String;
 		public var danger_edges:int;
 		
@@ -32,11 +31,42 @@ package com.rightisleft.vos
 		
 		public function incrementNeighbors():void
 		{
+			type = TYPE_RISKY;
 			danger_edges++;
 		}
 		
-		public function printDangerEdges():void {
-			trace('danger_edges:' + danger_edges);
+		public function get text():String {
+			if(type == TileVO.TYPE_MINE)
+			{
+				return "Mine!"
+			} else if (danger_edges > 0) {
+				return danger_edges.toString();
+			} else {
+				return "";
+			}
+		}
+		
+		public function get color():uint {
+			
+			if(type == TileVO.TYPE_MINE)
+			{
+				return 0xFFF80000;
+			} else if (danger_edges > 0) {
+				return 0xFFFFC809;
+			} else {
+				return 0xFF336600;
+			}
+		}
+
+		public function get state():int
+		{
+			return _state;
+		}
+
+		public function set state(value:int):void
+		{
+			_state = value;
+			dispatchEvent(new Event(Event.CHANGE) );
 		}
 		
 	}

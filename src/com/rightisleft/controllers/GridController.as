@@ -16,9 +16,7 @@ package com.rightisleft.controllers
 		
 		public function init(model:GridVO, view: GridView):void {
 
-			_model = model;
-			_model.generateNewGrid(8,6, 100, 100);
-			
+			_model = model;			
 			_view = view;
 			
 			for each (var cell:GridCellVO in _model.collection) 
@@ -31,15 +29,13 @@ package com.rightisleft.controllers
 		
 		private function onGridClicked(event:MouseEvent):void {
 			var cell:GridCellVO = _model.getCellByLocalCoardinate(event.localX, event.localY);
+			if(cell)
 			_view.updateCell(cell);
 		}
 		
-		private function onVoChanged(event):void {
-			//todo dispatch reference so we dont have to loop
-			for each (var cell:GridCellVO in _model.collection) 
-			{
-				_view.updateCell(cell);
-			}
+		private function onVoChanged(event:Event):void {
+			var cell:GridCellVO = _model.getCellByID(event.currentTarget.id);
+			_view.updateCell(cell);
 		}
 	}
 }
