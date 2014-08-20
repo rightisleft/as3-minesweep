@@ -14,9 +14,11 @@ package com.rightisleft.controllers
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
+	import flash.utils.Dictionary;
 
 	public class MineSweepController
 	{
+		//members objects
 		private var _view:Sprite = new Sprite;
 		private var _mineModel:MineSweepModel
 		
@@ -25,6 +27,11 @@ package com.rightisleft.controllers
 		
 		private var _tileView:BitmapData;
 		private var _textField:TextField;
+		
+		//private local performance variables
+		private var _textHash:Dictionary = new Dictionary();
+		private var _directions:Array = ['w', 'e', 's', 'n']
+		private var _nextTile:TileVO;
 		
 		public function MineSweepController(gridModel:GridVO, gridView:GridView, mineModel:MineSweepModel)
 		{
@@ -46,9 +53,11 @@ package com.rightisleft.controllers
 			
 			
 			//set titles to be mines
+			
+			var aTile:TileVO;
 			for (var i:int = 0; i < _mineModel.mineCount; i++) 
 			{
-				var aTile:TileVO = _mineModel.getRandomVO();
+				aTile = _mineModel.getRandomVO();
 				while(aTile.type == TileVO.TYPE_MINE) {
 					aTile = _mineModel.getRandomVO();
 				}
@@ -128,22 +137,38 @@ package com.rightisleft.controllers
 			tileVO.state == TileVO.STATE_CLEARED;
 				
 			//blit text
-			_textField.text = tileVO.text
-			var snapshot:BitmapData = new BitmapData(_textField.width, _textField.height, true, 0x00000000);
-			snapshot.draw(_textField, new Matrix() );
+			var textValue:String = tileVO.text;
+			var snapshot:BitmapData;
 			
-			//compose to square
-			var newData:BitmapData = new BitmapData(_mineModel.tileWidth, _mineModel.tileHeight, false, tileVO.color);
-			var rect:Rectangle = new Rectangle(0, 0, _textField.width, _textField.height);
-			var aPoint:Point = new Point();
-			newData.copyPixels(snapshot, rect, aPoint);
+			//check if bitmapdata is cached so we dont have to draw a bunch of repeated text fields
+			if(textValue.length) {
+				if(_textHash[textValue]) {
+					snapshot = _textHash[textValue]; //cached
+				} else {
+					_textField.text = textValue; 
+					snapshot = new BitmapData(_textField.width, _textField.height, true, 0x00000000);
+					snapshot.draw(_textField, new Matrix() );
+					_textHash[textValue] = snapshot;
+				}
+			}
+
+			//new fill
+			var tileBitmapData:BitmapData = new BitmapData(_mineModel.tileWidth, _mineModel.tileHeight, false, tileVO.color);
+
+			//compose text onto square
+			if(snapshot) {
+				var rect:Rectangle = new Rectangle(0, 0, _textField.width, _textField.height);
+				var aPoint:Point = new Point();
+				tileBitmapData.copyPixels(snapshot, rect, aPoint);	
+			}
 			
-			cell.bitmapData = newData; 	
+			
+			cell.bitmapData = tileBitmapData; 	
 		}
 		
 		private function getNieghborTile(tile:TileVO, direction:String):TileVO		
 		{
-			
+	
 			var neighborCell:GridCellVO; 
 			var originCell:GridCellVO = _gridModel.getCellByID(tile.id);
 			
@@ -173,24 +198,20 @@ package com.rightisleft.controllers
 			}
 		}
 		
-		private var _directions:Array = ['w', 'e', 's', 'n']
-		private var _nextTile:TileVO;
+
 		private function floodFill(node:TileVO, currentProperty:String, currentValue:int, replacementValue:int, replacementProperty:String):void
 		{
 			_nextTile = null;
 			
-			if(!node)
-			{
-				return;
-			}
-			
-			if(node[replacementProperty] == replacementValue || node[currentProperty] != currentValue)
+			//exit if netxt-node is already painted, exit of first node doesnt match
+			if(!node || node[replacementProperty] == replacementValue || node[currentProperty] != currentValue)
 			{
 				return;
 			}
 			
 			node[replacementProperty] = replacementValue;
 			
+			//paint neighbors
 			for each(var direction:String in _directions) 
 			{
 				_nextTile = getNieghborTile(node, direction);
@@ -200,7 +221,6 @@ package com.rightisleft.controllers
 					floodFill(_nextTile, currentProperty, currentValue, replacementValue, replacementProperty);	
 				}
 			}
-			
 		}
 	}
 }
