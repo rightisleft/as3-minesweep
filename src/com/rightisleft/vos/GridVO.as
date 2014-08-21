@@ -104,15 +104,13 @@ package com.rightisleft.vos
 			return new Point(_targetX, _targetY);
 		}
 
-		//test function
+		
 		public function getRandomCell():GridCellVO {
 			var aColIndex:int = int(_columns.length * Math.random() );
 			var aRowIndex:int = int(_columns[aColIndex].length * Math.random() );
 			
 			return _columns[aColIndex][aRowIndex] as GridCellVO;
-		}
-		// end test function
-	
+		}	
 		
 		public function getCellByLocalCoardinate(x:int, y:int):GridCellVO {
 			for each (var cell:GridCellVO in _collection) 
@@ -171,15 +169,15 @@ package com.rightisleft.vos
 			return null;
 		}
 		
-		//Todo: create hash map
 		private var _hash:Dictionary = new Dictionary();
 		public function getCellByID(id:String):GridCellVO {
-			
+			//check hash	
 			if(_hash[id]) {
 				return _hash[id];
 			}
 			
 			for each(var cell:GridCellVO in _collection) {
+				//create hash
 				_hash[cell.id] = cell;
 				
 				if(cell.id == id)
