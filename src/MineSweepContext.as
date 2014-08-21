@@ -9,19 +9,18 @@ package
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
+	import flash.events.KeyboardEvent;
 	
 	[SWF(width='800', height="600", frameRate="60")]
 	
 	public class MineSweepContext extends Sprite
-	{
-		private static const COLOR:uint = 0x007D26CD;
-		private static const SHOW_DEBUG_MODE:Boolean = true;
-				
+	{				
 		private var _gridModel:GridVO;
 		private var _gridView:GridView;
 		private var _gridController:GridController;
 		
 		private var _mineSweepController:MineSweepController;
+		private var _mineSweepModel:MineSweepModel;
 		
 		public function MineSweepContext()
 		{	
@@ -29,10 +28,10 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			
-			var mineModel:MineSweepModel  = new MineSweepModel();
+			_mineSweepModel  = new MineSweepModel();
 			
 			//Grid Setup
-			_gridModel = new GridVO(mineModel.collumns,mineModel.rows, mineModel.tileHeight, mineModel.tileWidth);	
+			_gridModel = new GridVO(_mineSweepModel.mode.columns, _mineSweepModel.mode.rows, _mineSweepModel.mode.tileHeight, _mineSweepModel.mode.tileWidth);	
 			
 			_gridView = new GridView();
 			_gridView.init(this);
@@ -40,13 +39,28 @@ package
 			_gridController = new GridController();
 			_gridController.init(_gridModel, _gridView);
 			
-			_mineSweepController = new MineSweepController(_gridModel, _gridView, mineModel);			
+			_mineSweepController = new MineSweepController(_gridModel, _gridView, _mineSweepModel);			
 
-			this.addChild(_gridView);
+			this.addChild(_gridView);	
 			
-			
-			//Game Setup
-			
+			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown)
+			this.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp)
+		}
+		
+		private function onKeyDown(event:KeyboardEvent):void
+		{
+			//should store depressed keys
+			if (event.shiftKey == true)
+			{
+				_mineSweepModel.isFlagging = true
+			}
+		}
+		
+		private function onKeyUp(event:KeyboardEvent):void {
+			if (event.shiftKey == true)
+			{
+				_mineSweepModel.isFlagging = false
+			}
 		}
 	}
 }

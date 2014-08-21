@@ -36,6 +36,10 @@ package com.rightisleft.vos
 		}
 		
 		public function get text():String {
+			if(state == STATE_FLAGGED)
+			{
+				return 'Flagged!';
+			}
 			if(type == TileVO.TYPE_MINE)
 			{
 				return "Mine!"
@@ -47,7 +51,9 @@ package com.rightisleft.vos
 		}
 		
 		public function get color():uint {
-			
+			if(state == STATE_FLAGGED) {
+				return 0xFF0000FF;
+			}
 			if(type == TileVO.TYPE_MINE)
 			{
 				return 0xFFF80000;

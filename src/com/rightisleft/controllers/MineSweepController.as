@@ -9,11 +9,13 @@ package com.rightisleft.controllers
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
+	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 
 	public class MineSweepController
@@ -53,9 +55,8 @@ package com.rightisleft.controllers
 			
 			
 			//set titles to be mines
-			
 			var aTile:TileVO;
-			for (var i:int = 0; i < _mineModel.mineCount; i++) 
+			for (var i:int = 0; i < _mineModel.mode.mineCount; i++) 
 			{
 				aTile = _mineModel.getRandomVO();
 				while(aTile.type == TileVO.TYPE_MINE) {
@@ -63,19 +64,22 @@ package com.rightisleft.controllers
 				}
 				
 				aTile.type = TileVO.TYPE_MINE;
-				updateNieghbors(aTile);
+				alertNeghborTiles(aTile);
 			}
 			
 			_gridView.addEventListener(MouseEvent.CLICK, onClick);
-			
-			//Show All
-//			for each(var atile:TileVO in _mineModel.collectionOfTiles)
-//			{
-//				atile.state = TileVO.STATE_CLEARED;
-//			}
+//			showAll();
 		}
 		
-		private function updateNieghbors(tile:TileVO):void
+		
+		private function showAll():void {
+			for each(var atile:TileVO in _mineModel.collectionOfTiles)
+			{
+				atile.state = TileVO.STATE_CLEARED;
+			}
+		}
+		
+		private function alertNeghborTiles(tile:TileVO):void
 		{
 			var nextCell:GridCellVO; 
 			var originCell:GridCellVO = _gridModel.getCellByID(tile.id);
@@ -117,25 +121,31 @@ package com.rightisleft.controllers
 		
 		private function onClick(event:MouseEvent):void {
 			var cell:GridCellVO = _gridModel.getCellByLocalCoardinate(event.localX, event.localY);
-			var tileVO:TileVO = _mineModel.getItemByID(cell.id);
-			clearTile(tileVO, cell);
-			
-			if(tileVO.type == TileVO.TYPE_OPEN)
-			{
-				floodFill(tileVO, 'type', TileVO.TYPE_OPEN, TileVO.STATE_CLEARED, 'state');
+			if(cell) 
+			{			
+				var tileVO:TileVO = _mineModel.getItemByID(cell.id);
+				if(!_mineModel.isFlagging) 
+				{
+					var isOpen:Boolean = (tileVO.type == TileVO.TYPE_OPEN);
+					tileVO.state = TileVO.STATE_CLEARED;
+					if(isOpen) {
+						floodFill(tileVO, 'type', TileVO.TYPE_OPEN, TileVO.STATE_CLEARED, 'state');
+					}
+				} else 
+				{
+					tileVO.state = TileVO.STATE_FLAGGED;
+				}
 			}
 		}
 		
 		private function onChange(event:Event):void {
 			var tileVO:TileVO = event.currentTarget as TileVO
 			var cell:GridCellVO = _gridModel.getCellByID(tileVO.id);
-			clearTile(tileVO, cell);
+			paintTile(tileVO, cell);
 		}
-		
-		private function clearTile(tileVO:TileVO, cell:GridCellVO):void
-		{
-			tileVO.state == TileVO.STATE_CLEARED;
 				
+		private function paintTile(tileVO:TileVO, cell:GridCellVO):void
+		{				
 			//blit text
 			var textValue:String = tileVO.text;
 			var snapshot:BitmapData;
@@ -153,7 +163,7 @@ package com.rightisleft.controllers
 			}
 
 			//new fill
-			var tileBitmapData:BitmapData = new BitmapData(_mineModel.tileWidth, _mineModel.tileHeight, false, tileVO.color);
+			var tileBitmapData:BitmapData = new BitmapData(_mineModel.mode.tileWidth, _mineModel.mode.tileHeight, false, tileVO.color);
 
 			//compose text onto square
 			if(snapshot) {
