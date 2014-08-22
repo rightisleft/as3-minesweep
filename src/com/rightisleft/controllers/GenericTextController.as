@@ -1,6 +1,5 @@
 package com.rightisleft.controllers
 {	
-	import flash.display.DisplayObjectContainer;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -9,20 +8,26 @@ package com.rightisleft.controllers
 	{
 			// This code would never make it production!
 			
-			private var _textFormat:TextFormat = new TextFormat("Cheese", 16, 0x00FF3366);
-			private var _view:DisplayObjectContainer;
+			private var _textFormat:TextFormat;
 			
-			[Embed(source="/fonts/ufonts.com_grilledcheese-btn.ttf", fontName = "Cheese", mimeType = "application/x-font-truetype",embedAsCFF="false", advancedAntiAliasing="true")]
-			private var embeddedCheeseFont:Class;
+			[Embed(	source="/fonts/cheese.ttf", 
+			    	fontName = "Cheese", 
+			    	mimeType = "application/x-font", 
+			    	fontStyle="normal", 
+			    	unicodeRange="englishRange", 
+			    	advancedAntiAliasing="true", 
+			    	embedAsCFF="false")]
+			private var myEmbeddedFont:Class;
 			
 			public function GenericTextController()
 			{
+				_textFormat = new TextFormat("Cheese", 32, 0x00FF6666);
 			}
 			
 			private var _textField:TextField;
 			public function setText(txt:String, textField:TextField):void {
 				_textField = textField;
-				_textField.setTextFormat( _textFormat );			
+				_textField.embedFonts = true;
 				_textField.autoSize = TextFieldAutoSize.LEFT;
 				_textField.background = false;
 				_textField.multiline = false;
