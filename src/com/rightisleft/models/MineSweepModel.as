@@ -8,12 +8,12 @@ package com.rightisleft.models
 	{
 		
 		public var collectionOfTiles:Array = []
-		public var mode:GameMode;
+		public var mode:BoardVO;
 		public var isFlagging:Boolean = false;
 		
-		private var _easyMode:GameMode;
-		private var _mediumMode:GameMode;
-		private var _hardMode:GameMode;
+		private var _easyMode:BoardVO;
+		private var _mediumMode:BoardVO;
+		private var _hardMode:BoardVO;
 		
 		public static const MODE_EASY:String = 'easy';
 		public static const MODE_MEDIUM:String = 'medium';
@@ -21,21 +21,21 @@ package com.rightisleft.models
 		
 		public function MineSweepModel()
 		{
-			_easyMode = new GameMode();
+			_easyMode = new BoardVO();
 			_easyMode.columns = 9
 			_easyMode.rows = 9
 			_easyMode.tileHeight = 16 
 			_easyMode.tileWidth = 16 
 			_easyMode.mineCount = 16
 				
-			_mediumMode = new GameMode();
+			_mediumMode = new BoardVO();
 			_mediumMode.columns = 16
 			_mediumMode.rows = 16
 			_mediumMode.tileHeight = 16 
 			_mediumMode.tileWidth = 16 
 			_mediumMode.mineCount = 40
 				
-			_hardMode = new GameMode();
+			_hardMode = new BoardVO();
 			_hardMode.columns = 32
 			_hardMode.rows = 16
 			_hardMode.tileHeight = 16 
@@ -87,7 +87,7 @@ package com.rightisleft.models
 	}
 }
 
-class GameMode {
+class BoardVO {
 	//default game values
 	public var columns:int
 	public var rows:int
@@ -95,5 +95,5 @@ class GameMode {
 	public var tileWidth:int
 	public var mineCount:int
 	
-	public function GameMode():void {}
+	public function BoardVO():void {}
 }

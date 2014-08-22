@@ -9,6 +9,7 @@ package com.rightisleft.controllers
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.filters.BevelFilter;
 	import flash.filters.BitmapFilterQuality;
@@ -80,8 +81,36 @@ package com.rightisleft.controllers
 			}
 			
 			_gridView.addEventListener(MouseEvent.CLICK, onClick);
+			_gridView.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage); 
+			
 		}
 		
+		private function onAddedToStage(event:Event):void {
+			_gridView.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown)
+			_gridView.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp)
+		}
+		
+		private function onKeyDown(event:KeyboardEvent):void
+		{
+			//should store depressed keys
+			if (event.keyCode == 16)
+			{
+				_mineModel.isFlagging = true
+			}
+			
+			//cheat key is c to showall
+			if(event.keyCode == 67) {
+				showAll();
+			}
+		}
+		
+		private function onKeyUp(event:KeyboardEvent):void 
+		{
+			if (event.keyCode == 16)
+			{
+				_mineModel.isFlagging = false
+			}
+		}
 		
 		public function showAll():void {
 			_gridView.lock();

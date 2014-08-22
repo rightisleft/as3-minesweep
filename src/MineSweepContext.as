@@ -9,7 +9,6 @@ package
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
-	import flash.events.KeyboardEvent;
 	
 	[SWF(width='800', height="600", frameRate="60")]
 	
@@ -44,31 +43,6 @@ package
 			_mineSweepController = new MineSweepController(_gridModel, _gridView, _mineSweepModel);			
 
 			this.addChild(_gridView);	
-			
-			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown)
-			this.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp)
-		}
-		
-		private function onKeyDown(event:KeyboardEvent):void
-		{
-			//should store depressed keys
-			if (event.keyCode == 9)
-			{
-				_mineSweepModel.isFlagging = true
-			}
-			
-			//cheat key is c to showall
-			if(event.keyCode == 67) {
-				_mineSweepController.showAll();
-			}
-		}
-		
-		private function onKeyUp(event:KeyboardEvent):void 
-		{
-			if (event.keyCode == 9)
-			{
-				_mineSweepModel.isFlagging = false
-			}
 		}
 	}
 }
