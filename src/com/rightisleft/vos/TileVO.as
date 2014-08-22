@@ -36,6 +36,9 @@ package com.rightisleft.vos
 		}
 		
 		public function get text():String {
+			if(state == STATE_LIVE) {
+				return '';
+			}
 			if(state == STATE_FLAGGED)
 			{
 				return 'Flagged!';
@@ -51,6 +54,9 @@ package com.rightisleft.vos
 		}
 		
 		public function get color():uint {
+			if(state == STATE_LIVE) {
+				return 0xFFCCCCCC;
+			}
 			if(state == STATE_FLAGGED) {
 				return 0xFF0000FF;
 			}
