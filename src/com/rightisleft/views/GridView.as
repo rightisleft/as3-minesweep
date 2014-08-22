@@ -28,6 +28,14 @@ package com.rightisleft.views
 			_rect.y = 0;
 		}
 		
+		public function lock():void {
+			_bmpData.lock();
+		}
+		
+		public function unlock():void {
+			_bmpData.unlock();
+		}
+		
 		public function init(parent:DisplayObject):void {	
 			_bmpData = new BitmapData(parent.stage.stageWidth, parent.stage.stageHeight, false, 0x00EEEEEE);			
 			_bmpContainer = new Bitmap(_bmpData);
