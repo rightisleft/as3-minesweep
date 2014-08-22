@@ -16,8 +16,8 @@ package com.rightisleft.models
 		private var _hardMode:GameMode;
 		
 		public static const MODE_EASY:String = 'easy';
-		public static const MODE_MEDIUM:String = 'easy';
-		public static const MODE_HARD:String = 'easy';
+		public static const MODE_MEDIUM:String = 'medium';
+		public static const MODE_HARD:String = 'hard';
 		
 		public function MineSweepModel()
 		{
@@ -36,13 +36,11 @@ package com.rightisleft.models
 			_mediumMode.mineCount = 40
 				
 			_hardMode = new GameMode();
-			_hardMode.columns = 16
+			_hardMode.columns = 32
 			_hardMode.rows = 16
 			_hardMode.tileHeight = 16 
 			_hardMode.tileWidth = 16 
-			_hardMode.mineCount = 99
-				
-			setMode(MODE_EASY);
+			_hardMode.mineCount = 99				
 		}
 		
 		public function setMode(value:String):void {
@@ -52,12 +50,12 @@ package com.rightisleft.models
 					this.mode = _easyMode;
 				break;
 				
-				case MODE_EASY:
-					this.mode = _easyMode;
+				case MODE_MEDIUM:
+					this.mode = _mediumMode;
 				break;
 				
-				case MODE_EASY:
-					this.mode = _easyMode;
+				case MODE_HARD:
+					this.mode = _hardMode;
 				break;
 			}
 		}
