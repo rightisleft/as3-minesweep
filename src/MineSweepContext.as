@@ -4,6 +4,7 @@ package
 	import com.rightisleft.controllers.MineSweepController;
 	import com.rightisleft.models.MineSweepModel;
 	import com.rightisleft.views.GridView;
+	import com.rightisleft.views.LevelMenu;
 	import com.rightisleft.vos.GridVO;
 	
 	import flash.display.Sprite;
@@ -21,6 +22,8 @@ package
 		private var _mineSweepController:MineSweepController;
 		private var _mineSweepModel:MineSweepModel;
 		
+		private var _uiLayer:Sprite;
+		
 		public function MineSweepContext()
 		{	
 			//set stage properties
@@ -30,6 +33,7 @@ package
 			_mineSweepModel = new MineSweepModel();
 			_mineSweepModel.setMode(MineSweepModel.MODE_EASY);
 
+			_uiLayer = new Sprite();
 
 			//Grid Setup
 			_gridModel = new GridVO(_mineSweepModel.mode.columns, _mineSweepModel.mode.rows, _mineSweepModel.mode.tileHeight, _mineSweepModel.mode.tileWidth);	
@@ -43,6 +47,10 @@ package
 			_mineSweepController = new MineSweepController(_gridModel, _gridView, _mineSweepModel);			
 
 			this.addChild(_gridView);	
+			this.addChild(_uiLayer);
+			
+			var menu:LevelMenu = new LevelMenu();
+			_uiLayer.addChild(menu);
 		}
 	}
 }
