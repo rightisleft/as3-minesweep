@@ -28,8 +28,10 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			
-			_mineSweepModel  = new MineSweepModel();
-			
+			_mineSweepModel = new MineSweepModel();
+			_mineSweepModel.setMode(MineSweepModel.MODE_EASY);
+
+
 			//Grid Setup
 			_gridModel = new GridVO(_mineSweepModel.mode.columns, _mineSweepModel.mode.rows, _mineSweepModel.mode.tileHeight, _mineSweepModel.mode.tileWidth);	
 			
@@ -50,14 +52,20 @@ package
 		private function onKeyDown(event:KeyboardEvent):void
 		{
 			//should store depressed keys
-			if (event.shiftKey == true)
+			if (event.keyCode == 9)
 			{
 				_mineSweepModel.isFlagging = true
 			}
+			
+			//cheat key is c to showall
+			if(event.keyCode == 67) {
+				_mineSweepController.showAll();
+			}
 		}
 		
-		private function onKeyUp(event:KeyboardEvent):void {
-			if (event.shiftKey == true)
+		private function onKeyUp(event:KeyboardEvent):void 
+		{
+			if (event.keyCode == 9)
 			{
 				_mineSweepModel.isFlagging = false
 			}
