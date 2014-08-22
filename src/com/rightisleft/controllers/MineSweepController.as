@@ -9,13 +9,14 @@ package com.rightisleft.controllers
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.filters.BevelFilter;
+	import flash.filters.BitmapFilterQuality;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
-	import flash.ui.Keyboard;
+	import flash.text.TextFormat;
 	import flash.utils.Dictionary;
 
 	public class MineSweepController
@@ -34,6 +35,7 @@ package com.rightisleft.controllers
 		private var _textHash:Dictionary = new Dictionary();
 		private var _directions:Array = ['w', 'e', 's', 'n']
 		private var _nextTile:TileVO;
+		private var _bevelFilter:BevelFilter;
 		
 		public function MineSweepController(gridModel:GridVO, gridView:GridView, mineModel:MineSweepModel)
 		{
@@ -43,7 +45,16 @@ package com.rightisleft.controllers
 			_gridModel = gridModel;
 			_textField = new TextField();
 			
-			//bind grid cell id to tile vo
+			var format:TextFormat = new TextFormat('Verdana', null, 0x000000, true);
+			_textField.defaultTextFormat = format;
+			_textField.antiAliasType = 'advanced'; 
+
+			_bevelFilter = new BevelFilter();
+			_bevelFilter.blurX = 2;
+			_bevelFilter.blurY = 2;
+			_bevelFilter.strength = .1
+						
+			_gridView.lock();
 			for each (var cell:GridCellVO in gridModel.collection) 
 			{
 				var tile:TileVO = new TileVO();
@@ -51,8 +62,9 @@ package com.rightisleft.controllers
 				tile.addEventListener(Event.CHANGE, onChange);
 				
 				_mineModel.collectionOfTiles.push ( tile );
+				tile.state = tile.state;
 			}
-			
+			_gridView.unlock();
 			
 			//set titles to be mines
 			var aTile:TileVO;
@@ -68,15 +80,16 @@ package com.rightisleft.controllers
 			}
 			
 			_gridView.addEventListener(MouseEvent.CLICK, onClick);
-//			showAll();
 		}
 		
 		
-		private function showAll():void {
+		public function showAll():void {
+			_gridView.lock();
 			for each(var atile:TileVO in _mineModel.collectionOfTiles)
 			{
 				atile.state = TileVO.STATE_CLEARED;
 			}
+			_gridView.unlock();
 		}
 		
 		private function alertNeghborTiles(tile:TileVO):void
@@ -127,9 +140,10 @@ package com.rightisleft.controllers
 				if(!_mineModel.isFlagging) 
 				{
 					var isOpen:Boolean = (tileVO.type == TileVO.TYPE_OPEN);
-					tileVO.state = TileVO.STATE_CLEARED;
 					if(isOpen) {
 						floodFill(tileVO, 'type', TileVO.TYPE_OPEN, TileVO.STATE_CLEARED, 'state');
+					} else {
+						tileVO.state = TileVO.STATE_CLEARED;
 					}
 				} else 
 				{
@@ -156,23 +170,29 @@ package com.rightisleft.controllers
 					snapshot = _textHash[textValue]; //cached
 				} else {
 					_textField.text = textValue; 
-					snapshot = new BitmapData(_textField.width, _textField.height, true, 0x00000000);
+					
+					snapshot = new BitmapData(_textField.width, _textField.height, true, 0x00FFFFFF);
 					snapshot.draw(_textField, new Matrix() );
 					_textHash[textValue] = snapshot;
 				}
 			}
 
 			//new fill
-			var tileBitmapData:BitmapData = new BitmapData(_mineModel.mode.tileWidth, _mineModel.mode.tileHeight, false, tileVO.color);
+			var tileBitmapData:BitmapData = new BitmapData(_mineModel.mode.tileWidth, _mineModel.mode.tileHeight, true, tileVO.color);
 
 			//compose text onto square
 			if(snapshot) {
 				var rect:Rectangle = new Rectangle(0, 0, _textField.width, _textField.height);
 				var aPoint:Point = new Point();
-				tileBitmapData.copyPixels(snapshot, rect, aPoint);	
+				tileBitmapData.copyPixels(snapshot, rect, aPoint, null, null, true);	
 			}
 			
+			//Apply Tile Bevel
+			var bevelRect:Rectangle = new Rectangle(0,0, tileBitmapData.width,tileBitmapData.height)
+			_bevelFilter.quality = BitmapFilterQuality.HIGH;
+			tileBitmapData.applyFilter(tileBitmapData,bevelRect,new Point(0,0), _bevelFilter);
 			
+			//Re-Render
 			cell.bitmapData = tileBitmapData; 	
 		}
 		
