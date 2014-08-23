@@ -1,6 +1,5 @@
 package
 {
-	import com.rightisleft.controllers.GridController;
 	import com.rightisleft.controllers.MineSweepController;
 	import com.rightisleft.models.MineSweepModel;
 	import com.rightisleft.views.GridView;
@@ -19,7 +18,7 @@ package
 	{				
 		private var _gridModel:GridVO;
 		private var _gridView:GridView;
-		private var _gridController:GridController;
+
 		
 		private var _mineSweepController:MineSweepController;
 		private var _mineSweepModel:MineSweepModel;
@@ -73,15 +72,13 @@ package
 				_mineSweepController.endGame();
 				_mineSweepModel.setMode(mode);
 			}
+
 		}
 		
 		private function onActivate(event:Event):void 
 		{
 			_gridModel = new GridVO(_mineSweepModel.mode.columns, _mineSweepModel.mode.rows, _mineSweepModel.mode.tileHeight, _mineSweepModel.mode.tileWidth);	
 			_gridView.init(this);
-			
-			_gridController = new GridController();
-			_gridController.init(_gridModel, _gridView);
 			
 			_mineSweepController.init(_gridModel, _gridView, _mineSweepModel);
 		}

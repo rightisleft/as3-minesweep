@@ -11,7 +11,8 @@ package com.rightisleft.vos
 		private var _width:int;
 		private var _height:int;
 		private var _tileValue:int;
-		private var _bitmapData:BitmapData;
+		
+		public var bitmapData:BitmapData;
 
 		public var array_x_index:int;
 		public var array_y_index:int;
@@ -22,7 +23,8 @@ package com.rightisleft.vos
 			_coardinate = new Point(x,y);
 			_height = height;
 			_width = width;
-			bitmapData = new BitmapData(_width, _height, true, 0xFFEEEEEE);
+			array_x_index = x;
+			array_y_index = y;
 		}
 		
 		public function get x():int {
@@ -46,28 +48,11 @@ package com.rightisleft.vos
 		public function get id():String {
 			return "" + x + y;
 		}
-
-		public function get bitmapData():BitmapData
-		{
-			return _bitmapData;
-		}
-
-		public function set bitmapData(value:BitmapData):void
-		{
-			_bitmapData = value;
-			onChange();
-		}
-		
-		public function onChange():void
-		{
-			this.dispatchEvent(new Event(Event.CHANGE) );
-		}
 		
 		public function destroy():void
 		{
-			_bitmapData = null;
+			bitmapData = null;
 			this.dispatchEvent(new Event(Event.REMOVED) );
 		}
-
 	}
 }

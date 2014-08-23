@@ -8,7 +8,6 @@ package com.rightisleft.controllers
 	
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
-	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.filters.BevelFilter;
@@ -71,10 +70,11 @@ package com.rightisleft.controllers
 			{
 				var tile:TileVO = new TileVO();
 				tile.id = cell.id;
-				tile.addEventListener(Event.CHANGE, onChange);
+				
 				_mineModel.collectionOfTiles.push ( tile );
-				tile.state = tile.state; //force render - this smells bad
+				paintTile(tile);
 			}
+			
 			_gridView.unlock();
 			
 			//set titles to be mines
@@ -123,6 +123,7 @@ package com.rightisleft.controllers
 			for each(var atile:TileVO in _mineModel.collectionOfTiles)
 			{
 				atile.state = TileVO.STATE_CLEARED;
+				paintTile(atile);
 			}
 			_gridView.unlock();
 		}
@@ -169,32 +170,33 @@ package com.rightisleft.controllers
 		
 		private function onClick(event:MouseEvent):void {
 			var cell:GridCellVO = _gridModel.getCellByLocalCoardinate(event.localX, event.localY);
+			
 			if(cell) 
 			{			
 				var tileVO:TileVO = _mineModel.getItemByID(cell.id);
 				if(!_mineModel.isFlagging) 
 				{
-					var isOpen:Boolean = (tileVO.type == TileVO.TYPE_OPEN);
-					if(isOpen) {
-						floodFill(tileVO, 'type', TileVO.TYPE_OPEN, TileVO.STATE_CLEARED, 'state');
+					if(tileVO.type == TileVO.TYPE_OPEN) {
+						_gridView.lock();
+						floodFill(tileVO, 'type', TileVO.TYPE_OPEN, TileVO.STATE_CLEARED, 'state', paintTile);
+						_gridView.unlock();
 					} else {
 						tileVO.state = TileVO.STATE_CLEARED;
+						paintTile(tileVO);
 					}
 				} else 
 				{
 					tileVO.state = TileVO.STATE_FLAGGED;
+					paintTile(tileVO);
 				}
 			}
-		}
-		
-		private function onChange(event:Event):void {
-			var tileVO:TileVO = event.currentTarget as TileVO
-			var cell:GridCellVO = _gridModel.getCellByID(tileVO.id);
-			paintTile(tileVO, cell);
+			
 		}
 				
-		private function paintTile(tileVO:TileVO, cell:GridCellVO):void
+		private function paintTile(tileVO:TileVO):void
 		{				
+			var cell:GridCellVO = _gridModel.getCellByID(tileVO.id);
+
 			//blit text
 			var textValue:String = tileVO.text;
 			var snapshot:BitmapData;
@@ -227,8 +229,8 @@ package com.rightisleft.controllers
 			_bevelFilter.quality = BitmapFilterQuality.HIGH;
 			tileBitmapData.applyFilter(tileBitmapData,bevelRect,new Point(0,0), _bevelFilter);
 			
-			//Re-Render
-			cell.bitmapData = tileBitmapData; 	
+			cell.bitmapData = tileBitmapData;
+			_gridView.updateCell(cell);
 		}
 		
 		private function getNieghborTile(tile:TileVO, direction:String):TileVO		
@@ -263,8 +265,7 @@ package com.rightisleft.controllers
 			}
 		}
 		
-
-		private function floodFill(node:TileVO, currentProperty:String, currentValue:int, replacementValue:int, replacementProperty:String):void
+		private function floodFill(node:TileVO, currentProperty:String, currentValue:int, replacementValue:int, replacementProperty:String, closure:Function):void
 		{
 			_nextTile = null;
 			
@@ -275,6 +276,7 @@ package com.rightisleft.controllers
 			}
 			
 			node[replacementProperty] = replacementValue;
+			closure(node);
 			
 			//paint neighbors
 			for each(var direction:String in _directions) 
@@ -283,9 +285,9 @@ package com.rightisleft.controllers
 				
 				if(_nextTile) 
 				{
-					floodFill(_nextTile, currentProperty, currentValue, replacementValue, replacementProperty);	
+					floodFill(_nextTile, currentProperty, currentValue, replacementValue, replacementProperty, closure);	
 				}
-			}
+			}			
 		}
 	}
 }

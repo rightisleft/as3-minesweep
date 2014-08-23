@@ -1,6 +1,5 @@
 package com.rightisleft.vos
 {
-	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	
 
@@ -78,7 +77,6 @@ package com.rightisleft.vos
 		public function set state(value:int):void
 		{
 			_state = value;
-			dispatchEvent(new Event(Event.CHANGE) );
 		}
 		
 	}

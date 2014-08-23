@@ -9,7 +9,7 @@ package com.rightisleft.vos
 	{
 		private var _rowCount:int;
 		private var _columnCount:int;
-		private var _collection:Array = [];
+		public var collection:Array = [];
 		private var _columns:Array;
 		
 		private var _cellHeight:int;
@@ -47,16 +47,17 @@ package com.rightisleft.vos
 						_previousCell = (j != 0) ? aColumn[j-1] : null;
 					}
 					
-					var nextLocation:Point = getNextCellLocation(_previousCell);
-					var next2DArray:Point = getNext2DCoordinate(_previousCell);
+					var location:Point = getNextCellLocation(_previousCell);
 					
-					var newCell:GridCellVO = new GridCellVO(nextLocation.x, nextLocation.y, _cellWidth, _cellHeight);
-					newCell.array_x_index = next2DArray.x;
-					newCell.array_y_index = next2DArray.y;
+					var newCell:GridCellVO = new GridCellVO(location.x, location.y, _cellWidth, _cellHeight);
+					newCell.array_x_index = j;
+					newCell.array_y_index = i;
+					
+					_idHash[newCell.id] = newCell;
 					
 					aColumn[j] = newCell;
 					
-					_collection.push(newCell);
+					collection.push(newCell);
 				}
 				
 				_columns[i] = aColumn; 
@@ -84,26 +85,6 @@ package com.rightisleft.vos
 			
 			return new Point(_targetX, _targetY);
 		}
-		
-		private function getNext2DCoordinate(previousCell:GridCellVO = null):Point {
-			
-			_targetX = 0;
-			_targetY = 0;
-			
-			if(previousCell == null){
-				return new Point();
-			} else {
-				_targetX = previousCell.array_x_index + 1;
-				_targetY = previousCell.array_y_index;
-				
-				if(_targetX >= _columnCount ) {
-					_targetX = 0;
-					_targetY = previousCell.array_y_index + 1;
-				}
-			}
-			
-			return new Point(_targetX, _targetY);
-		}
 
 		
 		public function getRandomCell():GridCellVO {
@@ -114,7 +95,7 @@ package com.rightisleft.vos
 		}	
 		
 		public function getCellByLocalCoardinate(x:int, y:int):GridCellVO {
-			for each (var cell:GridCellVO in _collection) 
+			for each (var cell:GridCellVO in collection) 
 			{
 				if(cell.x <= x && x <= (cell.x + cell.width) )
 				{
@@ -170,28 +151,10 @@ package com.rightisleft.vos
 			return null;
 		}
 		
-		private var _hash:Dictionary = new Dictionary();
+		private var _idHash:Dictionary = new Dictionary();
 		public function getCellByID(id:String):GridCellVO {
-			//check hash	
-			if(_hash[id]) {
-				return _hash[id];
-			}
-			
-			for each(var cell:GridCellVO in _collection) {
-				//create hash
-				_hash[cell.id] = cell;
-				
-				if(cell.id == id)
-				{
-					return cell;
-				}
-			}
-			return null;
-		}
+			return _idHash[id];
 
-		public function get collection():Array
-		{
-			return _collection;
 		}
 		
 		private function clearColumns():void {
@@ -200,8 +163,8 @@ package com.rightisleft.vos
 				cell.destroy();
 				cell = null;
 			}
-			_collection = [];
-			_hash = new Dictionary();
+			collection = [];
+			_idHash = new Dictionary();
 		}
 		
 		public function destroy():void 
