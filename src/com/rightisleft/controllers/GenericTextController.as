@@ -12,9 +12,8 @@ package com.rightisleft.controllers
 			
 			[Embed(	source="/fonts/cheese.ttf", 
 			    	fontName = "Cheese", 
-			    	mimeType = "application/x-font", 
-			    	fontStyle="normal", 
-			    	unicodeRange="englishRange", 
+			    	mimeType = "application/x-font-truetype", 
+					fontStyle="normal", 
 			    	advancedAntiAliasing="true", 
 			    	embedAsCFF="false")]
 			private var myEmbeddedFont:Class;
