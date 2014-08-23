@@ -2,13 +2,15 @@ package com.rightisleft.models
 {
 	import com.rightisleft.vos.TileVO;
 	
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
 
-	public class MineSweepModel
+	public class MineSweepModel extends EventDispatcher
 	{
 		
 		public var collectionOfTiles:Array = []
-		public var mode:BoardVO;
+		private var _mode:BoardVO;
 		public var isFlagging:Boolean = false;
 		
 		private var _easyMode:BoardVO;
@@ -84,6 +86,28 @@ package com.rightisleft.models
 			
 			return null;
 		}
+		
+		public function destroy():void 
+		{
+			for each(var tile:TileVO in collectionOfTiles)
+			{
+				tile = null;
+			}
+			_hash = new Dictionary();
+			collectionOfTiles.length = 0;
+		}
+
+		public function get mode():BoardVO
+		{
+			return _mode;
+		}
+
+		public function set mode(value:BoardVO):void
+		{
+			_mode = value;
+			this.dispatchEvent(new Event(Event.CHANGE) );
+		}
+
 	}
 }
 

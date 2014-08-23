@@ -62,6 +62,12 @@ package com.rightisleft.vos
 		{
 			this.dispatchEvent(new Event(Event.CHANGE) );
 		}
+		
+		public function destroy():void
+		{
+			_bitmapData = null;
+			this.dispatchEvent(new Event(Event.REMOVED) );
+		}
 
 	}
 }

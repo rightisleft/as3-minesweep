@@ -74,7 +74,7 @@ package com.rightisleft.vos
 		{
 			return _state;
 		}
-
+		
 		public function set state(value:int):void
 		{
 			_state = value;

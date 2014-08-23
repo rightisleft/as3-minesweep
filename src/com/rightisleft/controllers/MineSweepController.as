@@ -29,7 +29,6 @@ package com.rightisleft.controllers
 		private var _gridView:GridView;
 		private var _gridModel:GridVO;
 		
-		private var _tileView:BitmapData;
 		private var _textField:TextField;
 		
 		//private local performance variables
@@ -38,32 +37,43 @@ package com.rightisleft.controllers
 		private var _nextTile:TileVO;
 		private var _bevelFilter:BevelFilter;
 		
-		public function MineSweepController(gridModel:GridVO, gridView:GridView, mineModel:MineSweepModel)
+		public function MineSweepController()
 		{
-			
-			_mineModel = mineModel;
-			_gridView = gridView;
-			_gridModel = gridModel;
 			_textField = new TextField();
 			
 			var format:TextFormat = new TextFormat('Verdana', null, 0x000000, true);
 			_textField.defaultTextFormat = format;
 			_textField.antiAliasType = 'advanced'; 
-
+			
 			_bevelFilter = new BevelFilter();
 			_bevelFilter.blurX = 2;
 			_bevelFilter.blurY = 2;
 			_bevelFilter.strength = .1
-						
+		}
+		
+		public function init(gridModel:GridVO, gridView:GridView, mineModel:MineSweepModel):void {
+			
+			_mineModel = mineModel;
+			_gridView = gridView;
+			_gridModel = gridModel;
+			
+			_gridView.addEventListener(MouseEvent.CLICK, onClick);			
+			_gridView.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown)
+			_gridView.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp)
+			
+			start();
+		}
+		
+		private function start():void {
+			
 			_gridView.lock();
-			for each (var cell:GridCellVO in gridModel.collection) 
+			for each (var cell:GridCellVO in _gridModel.collection) 
 			{
 				var tile:TileVO = new TileVO();
 				tile.id = cell.id;
 				tile.addEventListener(Event.CHANGE, onChange);
-				
 				_mineModel.collectionOfTiles.push ( tile );
-				tile.state = tile.state;
+				tile.state = tile.state; //force render - this smells bad
 			}
 			_gridView.unlock();
 			
@@ -79,15 +89,11 @@ package com.rightisleft.controllers
 				aTile.type = TileVO.TYPE_MINE;
 				alertNeghborTiles(aTile);
 			}
-			
-			_gridView.addEventListener(MouseEvent.CLICK, onClick);
-			_gridView.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage); 
-			
 		}
 		
-		private function onAddedToStage(event:Event):void {
-			_gridView.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown)
-			_gridView.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp)
+		public function endGame():void {			
+			_gridModel.destroy();
+			_mineModel.destroy();
 		}
 		
 		private function onKeyDown(event:KeyboardEvent):void

@@ -1,9 +1,11 @@
 package com.rightisleft.vos
 {	
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 
-	public class GridVO
+	public class GridVO extends EventDispatcher
 	{
 		private var _rowCount:int;
 		private var _columnCount:int;
@@ -22,13 +24,12 @@ package com.rightisleft.vos
 			_cellHeight = cellHeight;
 			_cellWidth = cellWidth;
 			
-			draw();
+			generateColumns();
 		}
 		
-		//move this into the view?
-		//respond to change event
-		
-		public function draw():void {
+		public function generateColumns():void {
+			
+			clearColumns();
 			
 			//turn this into a recursive function?
 			for(var i:int = 0; i < _rowCount; i++) {
@@ -191,6 +192,22 @@ package com.rightisleft.vos
 		public function get collection():Array
 		{
 			return _collection;
+		}
+		
+		private function clearColumns():void {
+			for each(var cell:GridCellVO in collection) 
+			{
+				cell.destroy();
+				cell = null;
+			}
+			_collection = [];
+			_hash = new Dictionary();
+		}
+		
+		public function destroy():void 
+		{
+			clearColumns();
+			this.dispatchEvent(new Event(Event.REMOVED) )
 		}
 	}
 }
