@@ -7,7 +7,6 @@ package com.rightisleft.controllers
 	import com.rightisleft.vos.TileVO;
 	
 	import flash.display.BitmapData;
-	import flash.display.Sprite;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.filters.BevelFilter;
@@ -16,17 +15,15 @@ package com.rightisleft.controllers
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
-	import flash.text.TextFormat;
 	import flash.utils.Dictionary;
 
 	public class MineSweepController
 	{
 		//members objects
-		private var _view:Sprite = new Sprite;
 		private var _mineModel:MineSweepModel
 		
 		private var _gridView:GridView;
-		private var _gridModel:GridVO;
+		private var _gridVO:GridVO;
 		
 		private var _textField:TextField;
 		
@@ -39,10 +36,8 @@ package com.rightisleft.controllers
 		public function MineSweepController()
 		{
 			_textField = new TextField();
-			
-			var format:TextFormat = new TextFormat('Verdana', null, 0x000000, true);
-			_textField.defaultTextFormat = format;
-			_textField.antiAliasType = 'advanced'; 
+			var txtCtrl:GenericTextController = new GenericTextController();
+			txtCtrl.setText('', _textField)
 			
 			_bevelFilter = new BevelFilter();
 			_bevelFilter.blurX = 2;
@@ -54,7 +49,7 @@ package com.rightisleft.controllers
 			
 			_mineModel = mineModel;
 			_gridView = gridView;
-			_gridModel = gridModel;
+			_gridVO = gridModel;
 			
 			_gridView.addEventListener(MouseEvent.CLICK, onClick);			
 			_gridView.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown)
@@ -66,7 +61,7 @@ package com.rightisleft.controllers
 		private function start():void {
 			
 			_gridView.lock();
-			for each (var cell:GridCellVO in _gridModel.collection) 
+			for each (var cell:GridCellVO in _gridVO.collection) 
 			{
 				var tile:TileVO = new TileVO();
 				tile.id = cell.id;
@@ -88,17 +83,27 @@ package com.rightisleft.controllers
 				
 				aTile.type = TileVO.TYPE_MINE;
 				alertNeghborTiles(aTile);
+				
+				_mineModel.collectionOfMines.push(aTile);
 			}
+			
+			_gridView.x = (_gridView.stage.stageWidth * .5) - (_gridVO.gridWidth * .5);
 		}
 		
-		public function endGame():void {			
-			_gridModel.destroy();
-			_mineModel.destroy();
+		public function endGame():void {
+			if(_gridVO)
+			{
+				_gridVO.destroy();				
+			}
+			
+			if(_mineModel) {
+				_mineModel.destroy();	
+			}
 		}
 		
 		private function onKeyDown(event:KeyboardEvent):void
 		{
-			//should store depressed keys
+			//should store depressed keys			
 			if (event.keyCode == 16)
 			{
 				_mineModel.isFlagging = true
@@ -118,6 +123,7 @@ package com.rightisleft.controllers
 			}
 		}
 		
+		//cheat
 		public function showAll():void {
 			_gridView.lock();
 			for each(var atile:TileVO in _mineModel.collectionOfTiles)
@@ -131,7 +137,8 @@ package com.rightisleft.controllers
 		private function alertNeghborTiles(tile:TileVO):void
 		{
 			var nextCell:GridCellVO; 
-			var originCell:GridCellVO = _gridModel.getCellByID(tile.id);
+			var originCell:GridCellVO = _gridVO.getCellByID(tile.id);
+			
 			var nextTile:TileVO;
 			var doUpdate:Function = function (cell:GridCellVO):void
 			{			
@@ -143,33 +150,33 @@ package com.rightisleft.controllers
 				}
 			}	
 			
-			nextCell = _gridModel.getCellToNorthOf(originCell)
+			nextCell = _gridVO.getCellToNorthOf(originCell)
 			doUpdate(nextCell);
 				
-			nextCell = _gridModel.getCellToSouthOf(originCell)
+			nextCell = _gridVO.getCellToSouthOf(originCell)
 			doUpdate(nextCell);
 				
-			nextCell = _gridModel.getCellToEastOf(originCell)
+			nextCell = _gridVO.getCellToEastOf(originCell)
 			doUpdate(nextCell);
 				
-			nextCell = _gridModel.getCellToWestOf(originCell)
+			nextCell = _gridVO.getCellToWestOf(originCell)
 			doUpdate(nextCell);
 			
-			nextCell = _gridModel.getCellToNorthWestOf(originCell)
+			nextCell = _gridVO.getCellToNorthWestOf(originCell)
 			doUpdate(nextCell);
 			
-			nextCell = _gridModel.getCellToNorthEastOf(originCell)
+			nextCell = _gridVO.getCellToNorthEastOf(originCell)
 			doUpdate(nextCell);
 			
-			nextCell = _gridModel.getCellToSouthEastOf(originCell)
+			nextCell = _gridVO.getCellToSouthEastOf(originCell)
 			doUpdate(nextCell);
 			
-			nextCell = _gridModel.getCellToSouthWestOf(originCell)
+			nextCell = _gridVO.getCellToSouthWestOf(originCell)
 			doUpdate(nextCell);
 		}
 		
 		private function onClick(event:MouseEvent):void {
-			var cell:GridCellVO = _gridModel.getCellByLocalCoardinate(event.localX, event.localY);
+			var cell:GridCellVO = _gridVO.getCellByLocalCoardinate(event.localX, event.localY);
 			
 			if(cell) 
 			{			
@@ -184,18 +191,58 @@ package com.rightisleft.controllers
 						tileVO.state = TileVO.STATE_CLEARED;
 						paintTile(tileVO);
 					}
-				} else 
-				{
-					tileVO.state = TileVO.STATE_FLAGGED;
-					paintTile(tileVO);
+				} else {
+					if(tileVO.state == TileVO.STATE_FLAGGED)
+					{
+						tileVO.state = TileVO.STATE_LIVE;
+						paintTile(tileVO);
+						_mineModel.flagsOnBoard--
+					} else {
+						
+						if(_mineModel.flagsOnBoard >= _mineModel.mode.mineCount)
+						{
+							trace('You Are Out Of Mines!!!!');
+						} else {
+							tileVO.state = TileVO.STATE_FLAGGED;
+							paintTile(tileVO);
+							_mineModel.flagsOnBoard++
+						}
+					}
 				}
 			}
 			
+			validateFlags()
+			
+			if(tileVO && tileVO.type == TileVO.TYPE_MINE && tileVO.state == TileVO.STATE_CLEARED)
+			{
+				_mineModel.setGameState(MineSweepModel.GAME_STATE_YOU_LOST);
+			}
+			
+		}
+		
+		private function validateFlags():void {
+			var isAMineStillActive:Boolean = false; //could increment a count instead of looping - insignificant performance at this stage
+			
+			for each(var tile:TileVO in _mineModel.collectionOfMines)
+			{
+				if(tile.state != TileVO.STATE_FLAGGED)
+				{
+					isAMineStillActive = true;
+					break;
+				}
+			}
+			
+			if(isAMineStillActive)
+			{
+				trace('Keep Working!!!');
+			} else {
+				_mineModel.setGameState(MineSweepModel.GAME_STATE_YOU_WON);
+			}
 		}
 				
 		private function paintTile(tileVO:TileVO):void
 		{				
-			var cell:GridCellVO = _gridModel.getCellByID(tileVO.id);
+			var cell:GridCellVO = _gridVO.getCellByID(tileVO.id);
 
 			//blit text
 			var textValue:String = tileVO.text;
@@ -237,22 +284,22 @@ package com.rightisleft.controllers
 		{
 	
 			var neighborCell:GridCellVO; 
-			var originCell:GridCellVO = _gridModel.getCellByID(tile.id);
+			var originCell:GridCellVO = _gridVO.getCellByID(tile.id);
 			
 			switch(direction) {
 				case "n":
-					neighborCell = _gridModel.getCellToNorthOf(originCell);
+					neighborCell = _gridVO.getCellToNorthOf(originCell);
 				break;
 				
 				case "s":
-					neighborCell = _gridModel.getCellToSouthOf(originCell);
+					neighborCell = _gridVO.getCellToSouthOf(originCell);
 					break;
 				
 				case "e":
-					neighborCell = _gridModel.getCellToEastOf(originCell);
+					neighborCell = _gridVO.getCellToEastOf(originCell);
 					break;
 				case "w":
-					neighborCell = _gridModel.getCellToWestOf(originCell);
+					neighborCell = _gridVO.getCellToWestOf(originCell);
 					break;
 			}
 			
@@ -273,6 +320,11 @@ package com.rightisleft.controllers
 			if(!node || node[replacementProperty] == replacementValue || node[currentProperty] != currentValue)
 			{
 				return;
+			}
+			
+			if(node.state == TileVO.STATE_FLAGGED)
+			{
+				trace('Mine');
 			}
 			
 			node[replacementProperty] = replacementValue;

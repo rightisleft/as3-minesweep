@@ -2,8 +2,10 @@ package
 {
 	import com.rightisleft.controllers.MineSweepController;
 	import com.rightisleft.models.MineSweepModel;
+	import com.rightisleft.views.EndScreen;
 	import com.rightisleft.views.GridView;
 	import com.rightisleft.views.LevelMenu;
+	import com.rightisleft.views.TileBarController;
 	import com.rightisleft.vos.GridVO;
 	
 	import flash.display.Sprite;
@@ -22,8 +24,12 @@ package
 		
 		private var _mineSweepController:MineSweepController;
 		private var _mineSweepModel:MineSweepModel;
+		private var _menu:LevelMenu;
 		
-		private var _uiLayer:Sprite;
+		private var _textWon:EndScreen;
+		private var _textFailed:EndScreen;
+		
+		private var _titleBar:TileBarController;
 		
 		public function MineSweepContext()
 		{	
@@ -31,21 +37,75 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			
-			_uiLayer = new Sprite();
 			_gridView = new GridView();
+			addChild(_gridView);
 			
-			this.addChild(_gridView);	
-			this.addChild(_uiLayer);
+			_titleBar = new TileBarController(this);
+
 			
 			_mineSweepModel = new MineSweepModel();
-			_mineSweepModel.addEventListener(Event.CHANGE, onActivate);
 			_mineSweepController = new MineSweepController();			
 			
-			var menu:LevelMenu = new LevelMenu();
-			_uiLayer.addChild(menu);
+			_menu= new LevelMenu();
+			_menu.init(this, _mineSweepModel);
+
+			this.addChild(_menu);
+			
+			_textWon = new EndScreen('You Won!');
+			_textFailed = new EndScreen('You blew up! FAIL');
+			_textFailed.mouseEnabled = _textWon.mouseEnabled = false;
+			
+			_textFailed.addEventListener(Event.COMPLETE, onEndScreenComplete);
+			_textWon.addEventListener(Event.COMPLETE, onEndScreenComplete);
+			
+			_mineSweepModel.addEventListener(Event.CHANGE, onActivate);
+
 			
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown)
-			_mineSweepModel.setMode(MineSweepModel.MODE_EASY);
+			_mineSweepModel.addGameStateChangeHandler( ghettoStateHandler );
+			_mineSweepModel.setGameState(MineSweepModel.GAME_STATE_NEW);
+			_mineSweepModel.incrementHandlers.push( incrementMines ); 
+			
+			_gridView.y = _titleBar.height + 10;
+
+			this.addChild(_textWon);
+			this.addChild(_textFailed);
+		}
+		
+		private function incrementMines():void 
+		{
+			_titleBar.setCount(_mineSweepModel.flagsOnBoard, _mineSweepModel.mode.mineCount);
+		}
+		
+		private function onEndScreenComplete(event:Event):void 
+		{
+			_mineSweepModel.setGameState(MineSweepModel.GAME_STATE_NEW);
+		}
+		
+		private function ghettoStateHandler(model:MineSweepModel):void 
+		{		
+			_menu.visible = false;
+			_gridView.visible = true;
+			
+			switch(model.gameState)
+			{
+				case MineSweepModel.GAME_STATE_NEW:
+					_gridView.visible = false;
+					_menu.visible = true;
+				break;
+				
+				case MineSweepModel.GAME_STATE_PLAYING:
+					_gridView.visible = true;
+				break;
+				
+				case MineSweepModel.GAME_STATE_YOU_LOST:
+					_textFailed.start();
+				break;
+				
+				case MineSweepModel.GAME_STATE_YOU_WON:
+					_textWon.start();					
+				break;
+			}
 		}
 		
 		private function onKeyDown(event:KeyboardEvent):void 
@@ -72,14 +132,13 @@ package
 				_mineSweepController.endGame();
 				_mineSweepModel.setMode(mode);
 			}
-
 		}
 		
 		private function onActivate(event:Event):void 
 		{
+			_mineSweepController.endGame();
 			_gridModel = new GridVO(_mineSweepModel.mode.columns, _mineSweepModel.mode.rows, _mineSweepModel.mode.tileHeight, _mineSweepModel.mode.tileWidth);	
 			_gridView.init(this);
-			
 			_mineSweepController.init(_gridModel, _gridView, _mineSweepModel);
 		}
 	}

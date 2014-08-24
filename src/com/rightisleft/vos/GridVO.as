@@ -15,6 +15,8 @@ package com.rightisleft.vos
 		private var _cellHeight:int;
 		private var _cellWidth:int;
 		
+		private var _idHash:Dictionary = new Dictionary();
+
 		public function GridVO(columns:int, rows:int, cellHeight:int, cellWidth:int)
 		{
 			_columns = [];
@@ -25,6 +27,11 @@ package com.rightisleft.vos
 			_cellWidth = cellWidth;
 			
 			generateColumns();
+		}
+		
+		public function get gridWidth():int
+		{
+			return _cellWidth * _columnCount
 		}
 		
 		public function generateColumns():void {
@@ -151,7 +158,6 @@ package com.rightisleft.vos
 			return null;
 		}
 		
-		private var _idHash:Dictionary = new Dictionary();
 		public function getCellByID(id:String):GridCellVO {
 			return _idHash[id];
 

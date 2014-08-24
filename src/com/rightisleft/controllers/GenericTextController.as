@@ -10,17 +10,17 @@ package com.rightisleft.controllers
 			
 			private var _textFormat:TextFormat;
 			
-			[Embed(	source="/fonts/cheese.ttf", 
-			    	fontName = "Cheese", 
+			[Embed(	source="/fonts/akzidenz-grotesk-bold.ttf", 
+			    	fontName = "Akz", 
 			    	mimeType = "application/x-font-truetype", 
-					fontStyle="normal", 
+					fontStyle="Bold", 
 			    	advancedAntiAliasing="true", 
 			    	embedAsCFF="false")]
 			private var myEmbeddedFont:Class;
 			
-			public function GenericTextController()
+			public function GenericTextController(font:String = "Akz", size:int = 16, color:uint = 0x00333333)
 			{
-				_textFormat = new TextFormat("Cheese", 32, 0x00FF6666);
+				_textFormat = new TextFormat(font, size, color);
 			}
 			
 			private var _textField:TextField;

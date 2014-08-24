@@ -1,9 +1,7 @@
 package com.rightisleft.vos
 {
-	import flash.events.EventDispatcher;
 	
-
-	public class TileVO extends EventDispatcher
+	public class TileVO
 	{
 		
 		public static const STATE_LIVE:int = 0;
@@ -34,39 +32,50 @@ package com.rightisleft.vos
 			danger_edges++;
 		}
 		
+		
+		//Todo: should be set
 		public function get text():String {
 			if(state == STATE_LIVE) {
 				return '';
 			}
+			
 			if(state == STATE_FLAGGED)
 			{
 				return 'Flagged!';
 			}
+			
 			if(type == TileVO.TYPE_MINE)
 			{
 				return "Mine!"
-			} else if (danger_edges > 0) {
+			} 
+			
+			if (danger_edges > 0) {
 				return danger_edges.toString();
-			} else {
-				return "";
 			}
+			
+			return '';
 		}
 		
 		public function get color():uint {
+			
 			if(state == STATE_LIVE) {
-				return 0xFFCCCCCC;
+				return TileColors.GRAY;
 			}
+			
 			if(state == STATE_FLAGGED) {
-				return 0xFF0000FF;
+				return TileColors.BLUE;
 			}
+			
 			if(type == TileVO.TYPE_MINE)
 			{
-				return 0xFFF80000;
-			} else if (danger_edges > 0) {
-				return 0xFFFFC809;
-			} else {
-				return 0xFF336600;
+				return TileColors.RED;
+			} 
+			
+			if (danger_edges > 0) {
+				return TileColors.YELLOW;
 			}
+			
+			return TileColors.GREEN;
 		}
 
 		public function get state():int
@@ -75,9 +84,17 @@ package com.rightisleft.vos
 		}
 		
 		public function set state(value:int):void
-		{
+		{			
 			_state = value;
 		}
 		
 	}
+}
+
+class TileColors {
+	public static const GREEN:uint = 0xFF336600;
+	public static const YELLOW:uint = 0xFFFFC809;
+	public static const RED:uint = 0xFFF80000;
+	public static const BLUE:uint = 0xFF0000FF;
+	public static const GRAY:uint = 0xFFCCCCCC;
 }

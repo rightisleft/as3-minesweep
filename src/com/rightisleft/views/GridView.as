@@ -37,7 +37,7 @@ package com.rightisleft.views
 		}
 		
 		public function init(parent:DisplayObject):void {	
-			_bmpData = new BitmapData(parent.stage.stageWidth, parent.stage.stageHeight, false, 0x00EEEEEE);			
+			_bmpData = new BitmapData(parent.stage.stageWidth, parent.stage.stageHeight, false, 0xFFFFFFFF);			
 			_bmpContainer = new Bitmap(_bmpData);
 			this.addChild(_bmpContainer);
 		}
