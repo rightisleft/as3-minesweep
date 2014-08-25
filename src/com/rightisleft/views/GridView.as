@@ -42,13 +42,17 @@ package com.rightisleft.views
 			this.addChild(_bmpContainer);
 		}
 		
-		//Todo: convert to array and use lock / unlock for performance improvements
 		public function updateCell(cell:GridCellVO):void {		
 			_rect.width = cell.width;
 			_rect.height = cell.height;
 			_point.x = cell.x;
 			_point.y = cell.y;
 			_bmpData.copyPixels(cell.bitmapData, _rect, _point);
+		}
+		
+		public function destroy():void
+		{
+			_bmpData.dispose();
 		}
 	}
 }

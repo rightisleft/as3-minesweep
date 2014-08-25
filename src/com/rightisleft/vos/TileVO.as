@@ -4,16 +4,14 @@ package com.rightisleft.vos
 	public class TileVO
 	{
 		
-		public static const STATE_LIVE:int = 0;
-		public static const STATE_CLEARED:int = 1;
-		public static const STATE_FLAGGED:int = 2;
-		
+		public static const STATE_LIVE:int = 1;
+		public static const STATE_CLEARED:int = 2;
+		public static const STATE_FLAGGED:int = 3;
+		public static const STATE_EXPLODED:int = 4;
 		
 		public static const TYPE_OPEN:int = 0;
 		public static const TYPE_MINE:int = 1;
 		public static const TYPE_RISKY:int = 2;
-		
-
 		
 		public var type:int = -1;
 		private var _state:int;
@@ -31,7 +29,6 @@ package com.rightisleft.vos
 			type = TYPE_RISKY;
 			danger_edges++;
 		}
-		
 		
 		//Todo: should be set
 		public function get text():String {

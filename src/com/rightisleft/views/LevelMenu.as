@@ -23,7 +23,7 @@ package com.rightisleft.views
 		{
 			_leveltext = [];
 			
-			_ctrl = new GenericTextController('Akz', 20);
+			_ctrl = new GenericTextController('Akz', 20, 0x999999);
 			
 			_model = mineModel
 			

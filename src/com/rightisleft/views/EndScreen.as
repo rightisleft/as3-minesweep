@@ -18,23 +18,22 @@ package com.rightisleft.views
 		{
 			_text = new TextField();
 			_ctrl = new GenericTextController();
-			_ctrl.setText(title, _text);			
+			_ctrl.setText(title, _text);	
+			
+			_timer = new Timer(3000, 1);
+			_timer.addEventListener(TimerEvent.TIMER_COMPLETE, onComplete);
 		}
 		
 		public function start():void {
 			this.addChild(_text);
 			
-			_timer = new Timer(3000, 1);
-			_timer.addEventListener(TimerEvent.TIMER_COMPLETE, onComplete);
+
 			_timer.start();
 		}
 		
 		private function onComplete(event:TimerEvent):void {
+			_timer.stop();
 			this.removeChild(_text);
-			
-			_timer.removeEventListener(TimerEvent.TIMER_COMPLETE, onComplete);
-			_timer = null;
-			
 			this.dispatchEvent(new Event(Event.COMPLETE) );
 		}
 	}

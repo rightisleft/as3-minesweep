@@ -93,8 +93,12 @@ package com.rightisleft.controllers
 		public function endGame():void {
 			if(_gridVO)
 			{
-				_gridVO.destroy();				
+				_gridVO.destroy();	
 			}
+			
+			if(_gridView)
+				_gridView.destroy();
+
 			
 			if(_mineModel) {
 				_mineModel.destroy();	
@@ -177,50 +181,105 @@ package com.rightisleft.controllers
 		
 		private function onClick(event:MouseEvent):void {
 			var cell:GridCellVO = _gridVO.getCellByLocalCoardinate(event.localX, event.localY);
-			
+			var vo:TileVO;
+
 			if(cell) 
-			{			
-				var tileVO:TileVO = _mineModel.getItemByID(cell.id);
-				if(!_mineModel.isFlagging) 
+			{		
+				vo = _mineModel.getItemByID(cell.id);
+			}
+			
+			if(!vo)
+			{
+				return;
+			}
+			
+			var oState:int = vo.state
+			var oType:int = vo.type
+			var nState:int;
+			var isToggleFlag:Boolean = _mineModel.isFlagging;
+			var newState:int;
+			
+			//get state
+			
+			//flag state
+			if(isToggleFlag)
+			{
+								
+				if(oState == TileVO.STATE_FLAGGED)
 				{
-					if(tileVO.type == TileVO.TYPE_OPEN) {
-						_gridView.lock();
-						floodFill(tileVO, 'type', TileVO.TYPE_OPEN, TileVO.STATE_CLEARED, 'state', paintTile);
-						_gridView.unlock();
-					} else {
-						tileVO.state = TileVO.STATE_CLEARED;
-						paintTile(tileVO);
+					
+					newState = TileVO.STATE_LIVE;
+				}
+				
+				if(oState == TileVO.STATE_LIVE)
+				{
+					//enforce max flag count
+					if(_mineModel.flagsOnBoard >= _mineModel.mode.mineCount) {
+						return;
 					}
-				} else {
-					if(tileVO.state == TileVO.STATE_FLAGGED)
-					{
-						tileVO.state = TileVO.STATE_LIVE;
-						paintTile(tileVO);
-						_mineModel.flagsOnBoard--
-					} else {
-						
-						if(_mineModel.flagsOnBoard >= _mineModel.mode.mineCount)
-						{
-							trace('You Are Out Of Mines!!!!');
-						} else {
-							tileVO.state = TileVO.STATE_FLAGGED;
-							paintTile(tileVO);
-							_mineModel.flagsOnBoard++
-						}
-					}
+					
+					newState = TileVO.STATE_FLAGGED;
+				}
+			}
+			//clear state
+			else if(oState == TileVO.STATE_LIVE)
+			{
+				if(oState == TileVO.STATE_FLAGGED)
+				{
+					newState = 0;
+				}
+				
+				if(oType == TileVO.TYPE_MINE)
+				{
+					newState = TileVO.STATE_EXPLODED;
+				}
+				
+				if(oType == TileVO.TYPE_OPEN)
+				{
+					newState = TileVO.STATE_CLEARED;
+				}
+				
+				if(oType == TileVO.TYPE_RISKY)
+				{
+					newState = TileVO.STATE_CLEARED;
 				}
 			}
 			
-			validateFlags()
-			
-			if(tileVO && tileVO.type == TileVO.TYPE_MINE && tileVO.state == TileVO.STATE_CLEARED)
+			if(newState == TileVO.STATE_FLAGGED)
 			{
-				_mineModel.setGameState(MineSweepModel.GAME_STATE_YOU_LOST);
+				_mineModel.flagsOnBoard++
 			}
 			
+			if(oState == TileVO.STATE_FLAGGED && newState == TileVO.STATE_LIVE)
+			{
+				_mineModel.flagsOnBoard--
+			}
+			
+				
+			//only flood fill of the exposed tile is of type open
+			if(newState)
+			{
+				if(vo.type == TileVO.TYPE_OPEN && newState == TileVO.STATE_CLEARED) {
+					_gridView.lock();
+						floodFill(vo, ['type', TileVO.TYPE_OPEN, 'state', TileVO.STATE_LIVE], TileVO.STATE_CLEARED, 'state', paintTile);
+					_gridView.unlock();
+				} else {
+					vo.state = newState;
+					paintTile(vo);
+				}
+			}
+
+			validateFlags(vo)			
 		}
 		
-		private function validateFlags():void {
+		private function validateFlags(tileVO:TileVO):void {
+			
+			if(tileVO && tileVO.type == TileVO.TYPE_MINE && tileVO.state == TileVO.STATE_EXPLODED)
+			{
+				_mineModel.setGameState(MineSweepModel.GAME_STATE_YOU_LOST);
+				return;
+			}
+			
 			var isAMineStillActive:Boolean = false; //could increment a count instead of looping - insignificant performance at this stage
 			
 			for each(var tile:TileVO in _mineModel.collectionOfMines)
@@ -232,10 +291,8 @@ package com.rightisleft.controllers
 				}
 			}
 			
-			if(isAMineStillActive)
+			if(isAMineStillActive == false)
 			{
-				trace('Keep Working!!!');
-			} else {
 				_mineModel.setGameState(MineSweepModel.GAME_STATE_YOU_WON);
 			}
 		}
@@ -312,19 +369,22 @@ package com.rightisleft.controllers
 			}
 		}
 		
-		private function floodFill(node:TileVO, currentProperty:String, currentValue:int, replacementValue:int, replacementProperty:String, closure:Function):void
+		//multi property matching for a boundry fill
+		private function floodFill(node:TileVO, values:Array, replacementValue:int, replacementProperty:String, closure:Function):void
 		{
 			_nextTile = null;
 			
-			//exit if netxt-node is already painted, exit of first node doesnt match
-			if(!node || node[replacementProperty] == replacementValue || node[currentProperty] != currentValue)
+			var index:int
+			while(index < values.length)
 			{
-				return;
-			}
-			
-			if(node.state == TileVO.STATE_FLAGGED)
-			{
-				trace('Mine');
+				var currentProperty:String = values[index++]
+				var currentValue:int = values[index++]
+					
+				//exit function if netxt-node is already painted, exit of first node doesnt match
+				if(!node || node[replacementProperty] == replacementValue || node[currentProperty] != currentValue)
+				{
+					return;
+				}
 			}
 			
 			node[replacementProperty] = replacementValue;
@@ -337,7 +397,7 @@ package com.rightisleft.controllers
 				
 				if(_nextTile) 
 				{
-					floodFill(_nextTile, currentProperty, currentValue, replacementValue, replacementProperty, closure);	
+					floodFill(_nextTile, values, replacementValue, replacementProperty, closure);	
 				}
 			}			
 		}
