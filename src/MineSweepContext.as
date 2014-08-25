@@ -42,7 +42,6 @@ package
 			
 			_titleBar = new TileBarController(this);
 
-			
 			_mineSweepModel = new MineSweepModel();
 			_mineSweepController = new MineSweepController();			
 			
@@ -53,7 +52,6 @@ package
 			
 			_textWon = new EndScreen('You Won!');
 			_textFailed = new EndScreen('You blew up! FAIL');
-			_textFailed.mouseEnabled = _textWon.mouseEnabled = false;
 			
 			_textFailed.addEventListener(Event.COMPLETE, onEndScreenComplete);
 			_textWon.addEventListener(Event.COMPLETE, onEndScreenComplete);
@@ -62,14 +60,16 @@ package
 
 			
 			this.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown)
-			_mineSweepModel.addGameStateChangeHandler( ghettoStateHandler );
-			_mineSweepModel.setGameState(MineSweepModel.GAME_STATE_NEW);
+				
+			_mineSweepModel.addGameStateChangeHandler( onGameStateChange );
 			_mineSweepModel.incrementHandlers.push( incrementMines ); 
 			
 			_gridView.y = _titleBar.height + 10;
 
 			this.addChild(_textWon);
 			this.addChild(_textFailed);
+			
+			_mineSweepModel.setGameState(MineSweepModel.GAME_STATE_NEW);
 		}
 		
 		private function incrementMines():void 
@@ -82,7 +82,8 @@ package
 			_mineSweepModel.setGameState(MineSweepModel.GAME_STATE_NEW);
 		}
 		
-		private function ghettoStateHandler(model:MineSweepModel):void 
+		//Todo
+		private function onGameStateChange(model:MineSweepModel):void 
 		{		
 			_menu.visible = false;
 			_gridView.visible = true;
@@ -108,6 +109,7 @@ package
 			}
 		}
 		
+		//Todo Move to KeyCommandController
 		private function onKeyDown(event:KeyboardEvent):void 
 		{
 			//cheat end game
@@ -134,6 +136,7 @@ package
 			}
 		}
 		
+		//Todo move to MineSweepController
 		private function onActivate(event:Event):void 
 		{
 			_mineSweepController.endGame();

@@ -65,8 +65,11 @@ package com.rightisleft.controllers
 			{
 				var tile:TileVO = new TileVO();
 				tile.id = cell.id;
+				tile.tileWidth = _mineModel.mode.tileWidth;
+				tile.tileHeight = _mineModel.mode.tileHeight;
 				
 				_mineModel.collectionOfTiles.push ( tile );
+				
 				paintTile(tile);
 			}
 			
@@ -296,7 +299,9 @@ package com.rightisleft.controllers
 				_mineModel.setGameState(MineSweepModel.GAME_STATE_YOU_WON);
 			}
 		}
-				
+			
+		//Todo: move to TileVO getUpdatedBitmapData()
+		
 		private function paintTile(tileVO:TileVO):void
 		{				
 			var cell:GridCellVO = _gridVO.getCellByID(tileVO.id);
@@ -319,7 +324,7 @@ package com.rightisleft.controllers
 			}
 
 			//new fill
-			var tileBitmapData:BitmapData = new BitmapData(_mineModel.mode.tileWidth, _mineModel.mode.tileHeight, true, tileVO.color);
+			var tileBitmapData:BitmapData = new BitmapData(tileVO.tileWidth, tileVO.tileHeight, true, tileVO.color);
 
 			//compose text onto square
 			if(snapshot) {
@@ -334,9 +339,11 @@ package com.rightisleft.controllers
 			tileBitmapData.applyFilter(tileBitmapData,bevelRect,new Point(0,0), _bevelFilter);
 			
 			cell.bitmapData = tileBitmapData;
+			
 			_gridView.updateCell(cell);
 		}
 		
+		//Todo: do we need a TileController to manage tvos?
 		private function getNieghborTile(tile:TileVO, direction:String):TileVO		
 		{
 	
@@ -369,10 +376,13 @@ package com.rightisleft.controllers
 			}
 		}
 		
-		//multi property matching for a boundry fill
+		//multi property checking for a boundry fill
 		private function floodFill(node:TileVO, values:Array, replacementValue:int, replacementProperty:String, closure:Function):void
 		{
 			_nextTile = null;
+			
+			
+			//multi property checking
 			
 			var index:int
 			while(index < values.length)
@@ -387,10 +397,12 @@ package com.rightisleft.controllers
 				}
 			}
 			
+			//set value  & render
+			
 			node[replacementProperty] = replacementValue;
 			closure(node);
 			
-			//paint neighbors
+			//check neighbors
 			for each(var direction:String in _directions) 
 			{
 				_nextTile = getNieghborTile(node, direction);

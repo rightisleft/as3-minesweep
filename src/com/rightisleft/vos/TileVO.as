@@ -13,10 +13,14 @@ package com.rightisleft.vos
 		public static const TYPE_MINE:int = 1;
 		public static const TYPE_RISKY:int = 2;
 		
+		public var tileWidth:int;
+		public var tileHeight:int;
+		
 		public var type:int = -1;
-		private var _state:int;
 		public var id:String;
 		public var danger_edges:int;
+		
+		private var _state:int;
 		
 		public function TileVO()
 		{
