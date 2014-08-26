@@ -1,6 +1,5 @@
-package com.rightisleft.views
+package com.rightisleft.controllers
 {
-	import com.rightisleft.controllers.GenericTextController;
 	
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
@@ -20,9 +19,6 @@ package com.rightisleft.views
 		
 		public function TileBarController(parent:DisplayObjectContainer, resetHandler:Function = null)
 		{
-			
-			
-			
 			_resetHandler = resetHandler;
 			_ctrl = new GenericTextController("Akz", 16, 0xFFFFFF)
 			_ctrl.setText('MineSweep', _title)
@@ -62,6 +58,21 @@ package com.rightisleft.views
 		public function get height():int
 		{
 			return _display.height; 
+		}
+		
+		public function get y():int
+		{
+			return _display.y; 
+		}
+		
+		public function get flagvisible():Boolean
+		{
+			return _mineCount.visible;
+		}
+		
+		public function set flagvisible(value:Boolean):void
+		{
+			_mineCount.visible = value;
 		}
 	}
 }

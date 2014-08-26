@@ -4,7 +4,7 @@ package com.rightisleft.views
 	
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -17,8 +17,9 @@ package com.rightisleft.views
 		private var _bytes:ByteArray;
 		private var _rect:Rectangle;
 		private var _point:Point;
+		private var _parent:DisplayObjectContainer;
 		
-		public function GridView()
+		public function GridView(parent:DisplayObjectContainer)
 		{
 			_rect = new Rectangle();
 			_bytes = new ByteArray();
@@ -26,6 +27,7 @@ package com.rightisleft.views
 			_rect = new Rectangle();
 			_rect.x = 0;
 			_rect.y = 0;
+			_parent = parent;
 		}
 		
 		public function lock():void {
@@ -36,8 +38,8 @@ package com.rightisleft.views
 			_bmpData.unlock();
 		}
 		
-		public function init(parent:DisplayObject):void {	
-			_bmpData = new BitmapData(parent.stage.stageWidth, parent.stage.stageHeight, false, 0xFFFFFFFF);			
+		public function init():void {	
+			_bmpData = new BitmapData(_parent.stage.stageWidth, _parent.stage.stageHeight, false, 0xFFFFFFFF);			
 			_bmpContainer = new Bitmap(_bmpData);
 			this.addChild(_bmpContainer);
 		}

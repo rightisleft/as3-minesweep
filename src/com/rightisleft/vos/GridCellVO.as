@@ -1,7 +1,6 @@
 package com.rightisleft.vos
 {
 	import flash.display.BitmapData;
-	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.geom.Point;
 
@@ -52,7 +51,27 @@ package com.rightisleft.vos
 		public function destroy():void
 		{
 			bitmapData = null;
-			this.dispatchEvent(new Event(Event.REMOVED) );
+			
+			_updateHandlers.length = 0;
+			
+			_updateHandlers = [];
+		}
+		
+		public function updated():void 
+		{
+			for each(var closure:Function in _updateHandlers)
+			{
+				if(closure)
+				{
+					closure(this);
+				}
+			}
+		}
+		
+		private var _updateHandlers:Array = [];
+		public function addUpdateHanlder(value:Function):void
+		{
+			_updateHandlers.push(value);
 		}
 	}
 }

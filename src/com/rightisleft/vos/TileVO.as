@@ -1,5 +1,6 @@
 package com.rightisleft.vos
 {
+	import flash.display.BitmapData;
 	
 	public class TileVO
 	{
@@ -19,6 +20,7 @@ package com.rightisleft.vos
 		public var type:int = -1;
 		public var id:String;
 		public var danger_edges:int;
+		public var bmpd:BitmapData;
 		
 		private var _state:int;
 		
@@ -28,7 +30,7 @@ package com.rightisleft.vos
 			state = STATE_LIVE;
 		}
 		
-		public function incrementNeighbors():void
+		public function addDangerEdge():void
 		{
 			type = TYPE_RISKY;
 			danger_edges++;
@@ -89,9 +91,30 @@ package com.rightisleft.vos
 			_state = value;
 		}
 		
+		public function destroy():void
+		{
+			_updateHandlers.length = 0;
+			_updateHandlers = [];
+		}
+		
+		public function updated():void 
+		{
+			for each(var closure:Function in _updateHandlers)
+			{
+				if(closure)
+				{
+					closure(this);
+				}
+			}
+		}
+		
+		private var _updateHandlers:Array = [];
+		public function addUpdateHanlder(value:Function):void
+		{
+			_updateHandlers.push(value);
+		}
 	}
 }
-
 class TileColors {
 	public static const GREEN:uint = 0xFF336600;
 	public static const YELLOW:uint = 0xFFFFC809;

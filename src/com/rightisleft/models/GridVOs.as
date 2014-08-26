@@ -1,11 +1,12 @@
-package com.rightisleft.vos
+package com.rightisleft.models
 {	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
+	import com.rightisleft.vos.GridCellVO;
 
-	public class GridVO extends EventDispatcher
+	public class GridVOs extends EventDispatcher
 	{
 		private var _rowCount:int;
 		private var _columnCount:int;
@@ -17,16 +18,9 @@ package com.rightisleft.vos
 		
 		private var _idHash:Dictionary = new Dictionary();
 
-		public function GridVO(columns:int, rows:int, cellHeight:int, cellWidth:int)
+		public function GridVOs()
 		{
-			_columns = [];
-			_rowCount = rows;
-			_columnCount = columns;
-			
-			_cellHeight = cellHeight;
-			_cellWidth = cellWidth;
-			
-			generateColumns();
+			_columns = [];			
 		}
 		
 		public function get gridWidth():int
@@ -34,7 +28,15 @@ package com.rightisleft.vos
 			return _cellWidth * _columnCount
 		}
 		
-		public function generateColumns():void {
+		public function init(columns:int, rows:int, cellHeight:int, cellWidth:int):void {
+			
+			_rowCount = rows;
+			
+			_columnCount = columns;
+			
+			_cellHeight = cellHeight;
+			
+			_cellWidth = cellWidth;	
 			
 			clearColumns();
 			
@@ -160,23 +162,49 @@ package com.rightisleft.vos
 		
 		public function getCellByID(id:String):GridCellVO {
 			return _idHash[id];
-
+		}
+		
+		public function getNieghborCellByDirection(id:String, direction:String):GridCellVO
+		{
+			var neighborCell:GridCellVO; 
+			var originCell:GridCellVO = getCellByID(id);
+			
+			switch(direction) {
+				case "n":
+					neighborCell = getCellToNorthOf(originCell);
+					break;
+				
+				case "s":
+					neighborCell = getCellToSouthOf(originCell);
+					break;
+				
+				case "e":
+					neighborCell = getCellToEastOf(originCell);
+					break;
+				case "w":
+					neighborCell = getCellToWestOf(originCell);
+					break;
+			}
+			
+			return neighborCell
 		}
 		
 		private function clearColumns():void {
 			for each(var cell:GridCellVO in collection) 
 			{
 				cell.destroy();
+				
 				cell = null;
 			}
+			
 			collection = [];
+			
 			_idHash = new Dictionary();
 		}
 		
 		public function destroy():void 
 		{
 			clearColumns();
-			this.dispatchEvent(new Event(Event.REMOVED) )
 		}
 	}
 }

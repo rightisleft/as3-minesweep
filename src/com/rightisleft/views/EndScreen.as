@@ -24,17 +24,21 @@ package com.rightisleft.views
 			_timer.addEventListener(TimerEvent.TIMER_COMPLETE, onComplete);
 		}
 		
-		public function start():void {
+		public function enter():void
+		{
 			this.addChild(_text);
 			
-
 			_timer.start();
+		}
+		
+		public function exit():void
+		{
+			this.dispatchEvent(new Event(Event.COMPLETE) );
 		}
 		
 		private function onComplete(event:TimerEvent):void {
 			_timer.stop();
 			this.removeChild(_text);
-			this.dispatchEvent(new Event(Event.COMPLETE) );
 		}
 	}
 }
