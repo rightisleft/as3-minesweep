@@ -15,9 +15,6 @@ package com.rightisleft.controllers
 	{		
 		private var _leveltext:Array;
 		
-		private var _ctrl:GenericTextController;
-		private var _model:TileVOs;
-		private var _tileVOs:TileVOs;
 		private var _parent:DisplayObjectContainer;
 		private var _view:LevelMenuView;
 		private var _gameOptions:GameOptionsVOs;
@@ -60,16 +57,19 @@ package com.rightisleft.controllers
 			
 			
 			tiles.addEventListener(GameEvent.GAME_STATE_EVENT, onTileStateChange);
+			tiles.options.addEventListener(GameEvent.GAME_STATE_EVENT, onTileStateChange);
 		}
 		
 		private function onTileStateChange(event:GameEvent):void
 		{
 			switch(event.result)
 			{
-				case GameEvent.GAME_STATE_YOU_LOST:
-				case GameEvent.GAME_STATE_YOU_WON:
 				case GameEvent.GAME_STATE_NEW:
 					enter();
+					break;
+				
+				case GameEvent.GAME_STATE_PLAYING:
+					exit();
 					break;
 			}
 		}
@@ -77,8 +77,10 @@ package com.rightisleft.controllers
 		
 		private function onClick(event:MouseEvent):void
 		{
-			_gameOptions.setMode(event.currentTarget.text);
-			exit();
+			var tf:TextField = event.currentTarget as TextField;
+			
+			//pass through clicked text
+			_gameOptions.setMode(tf.text);
 		}
 	}
 }

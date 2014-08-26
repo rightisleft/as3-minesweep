@@ -24,7 +24,7 @@ package com.rightisleft.models
 			_easyMode.rows = 9
 			_easyMode.tileHeight = 25 
 			_easyMode.tileWidth = 25 
-			_easyMode.mineCount = 9
+			_easyMode.mineCount = 1
 			
 			_mediumMode = new BoardVO();
 			_mediumMode.columns = 16

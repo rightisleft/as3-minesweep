@@ -63,6 +63,8 @@ package com.rightisleft.models
 				mine = null;
 			}
 			
+			_flagsOnBoard = 0;
+			
 			_hash = new Dictionary();	
 						
 			collectionOfTiles = []
@@ -83,12 +85,20 @@ package com.rightisleft.models
 		
 		public function win():void
 		{
+			trace('you win');
 			this.dispatchEvent(new GameEvent(GameEvent.GAME_STATE_EVENT, GameEvent.GAME_STATE_YOU_WON) );
 		}
 		
 		public function lose():void
 		{
+			trace('you lose');
 			this.dispatchEvent(new GameEvent(GameEvent.GAME_STATE_EVENT, GameEvent.GAME_STATE_YOU_LOST) );
+		}
+		
+		public function newGame():void
+		{
+			trace('new game');
+			this.dispatchEvent(new GameEvent(GameEvent.GAME_STATE_EVENT, GameEvent.GAME_STATE_NEW) );
 		}
 	}
 }

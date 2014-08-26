@@ -8,7 +8,6 @@ package com.rightisleft.controllers
 	import com.rightisleft.vos.TileVO;
 	
 	import flash.display.DisplayObjectContainer;
-	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
@@ -36,16 +35,18 @@ package com.rightisleft.controllers
 		}
 		
 		//observer pattern would be better
-		private function turnOnListeners():void
+		private function turnOnPlayListeners():void
 		{
 			_parent.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			_parent.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyDown);
+			_parent.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			_gridView.addEventListener(MouseEvent.CLICK, onClick);
 		}
 		
-		private function turnOffListeners():void
+		private function turnOffPlayListeners():void
 		{			
 			_parent.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			_parent.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyDown);
+			_parent.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			_gridView.removeEventListener(MouseEvent.CLICK, onClick);
 		}
 		
 		public function init(gridVOs:GridVOs, gridView:GridView):void {
@@ -53,13 +54,12 @@ package com.rightisleft.controllers
 			_gridView = gridView;
 			_gridVOs = gridVOs;
 			
-			_gridView.addEventListener(MouseEvent.CLICK, onClick);
 			_tileController = new TileController(_tileVOs);
 		}
 				
 		public function exit():void {
 			
-			turnOffListeners();
+			turnOffPlayListeners();
 			
 			_parent.removeChild(_gridView);
 			
@@ -111,10 +111,11 @@ package com.rightisleft.controllers
 			}
 			
 			
-			_parent.addChild(_gridView);	
+			_parent.addChild(_gridView);
+			_parent.stage.focus = _parent.stage
 			_gridView.x = (_gridView.stage.stageWidth * .5) - (_gridVOs.gridWidth * .5);
 			
-			turnOnListeners();
+			turnOnPlayListeners();
 		}
 		
 		//cheat
@@ -124,6 +125,20 @@ package com.rightisleft.controllers
 			{
 				atile.state = TileVO.STATE_CLEARED;
 				_tileController.painTile(atile);
+			}
+			_gridView.unlock();
+		}
+		
+		private function showRemainingMines():void
+		{
+			_gridView.lock();
+			for each(var atile:TileVO in _tileVOs.collectionOfMines)
+			{
+				if(atile.type == TileVO.TYPE_MINE && atile.state != TileVO.STATE_FLAGGED)
+				{
+					atile.state = TileVO.STATE_EXPLODED;
+					_tileController.painTile(atile);
+				}
 			}
 			_gridView.unlock();
 		}
@@ -328,16 +343,28 @@ package com.rightisleft.controllers
 				
 				case GameEvent.GAME_STATE_YOU_LOST:
 				case GameEvent.GAME_STATE_YOU_WON:
+					showRemainingMines();
+					turnOffPlayListeners();
+					_gridView.addEventListener(MouseEvent.CLICK, onGotoLevelMenu);
+					break;
 				case GameEvent.GAME_STATE_NEW:
 					exit();
 					break;
 			}
 		}
 		
+		private function onGotoLevelMenu(e:MouseEvent):void
+		{
+			_gridView.removeEventListener(MouseEvent.CLICK, onGotoLevelMenu);
+			_tileVOs.newGame();
+		}
+		
 		private function onKeyUp(event:KeyboardEvent):void{
 			if (event.keyCode == 16)
 			{
 				_tileVOs.isFlagging = false
+				trace('isflagging false')
+
 			}
 		}
 		
@@ -347,6 +374,7 @@ package com.rightisleft.controllers
 			if (event.keyCode == 16)
 			{
 				_tileVOs.isFlagging = true
+					trace('isflagging true')
 			}
 			
 			//cheat key is c to showall

@@ -35,27 +35,27 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 
 			_gameOptions = new GameOptionsVOs();
-
-			// UIs Managers
-			_titleBar = new TileBarController(this);
 						
 			_gridView = new GridView(this);
 			
-			_gridView.y = _titleBar.height + 10;
 			
 			_gridVO = new GridVOs();	
 			
 			_tileVOs = new TileVOs(_gameOptions);
 			
+			_titleBar = new TileBarController(this, _tileVOs);
+			
 			_mineSweepController = new MineSweepController(this, _tileVOs);
 			_mineSweepController.init(_gridVO, _gridView);		
 			
 			_menuView = new LevelMenuView(this);
-			_menuView.y = _titleBar.y + _titleBar.height;
-			
+
 			_levelController = new LevelController(this, _menuView)
 			_levelController.init(_tileVOs);
 			_levelController.enter();
+			
+			_menuView.y = _titleBar.y + _titleBar.height;
+			_gridView.y = _titleBar.height + 10;
 		}
 	}
 }
