@@ -11,6 +11,7 @@ package com.rightisleft.events
 		public static const GAME_STATE_PLAYING:String = 'Play!';
 		public static const GAME_STATE_YOU_LOST:String = 'You Lost!';
 		public static const GAME_STATE_YOU_WON:String = 'You Won!';
+		public static const GAME_STATE_RESTART:String = 'restart!';
 				
 		public var result:Object;
 		

@@ -6,17 +6,14 @@ package com.rightisleft.views
 	import flash.display.Sprite;
 	import flash.text.TextField;
 
-	public class LevelMenuView extends Sprite
+	public class LevelUIView extends Sprite
 	{
 		private var _parent:DisplayObjectContainer;
 		private var _clickBlocker:Sprite = new Sprite();
 
-		public function LevelMenuView(parent:DisplayObjectContainer)
+		public function LevelUIView(parent:DisplayObjectContainer)
 		{
 			_parent = parent;
-			_clickBlocker.graphics.beginFill(0x000000, .1);
-			_clickBlocker.graphics.drawRect(0, 0, parent.stage.stageWidth, parent.stage.stageHeight );
-			_clickBlocker.graphics.endFill();
 			this.addChild(_clickBlocker);
 		}
 		

@@ -350,6 +350,10 @@ package com.rightisleft.controllers
 				case GameEvent.GAME_STATE_NEW:
 					exit();
 					break;
+				case GameEvent.GAME_STATE_RESTART:
+					exit();
+					enter();
+					break;
 			}
 		}
 		
@@ -363,8 +367,6 @@ package com.rightisleft.controllers
 			if (event.keyCode == 16)
 			{
 				_tileVOs.isFlagging = false
-				trace('isflagging false')
-
 			}
 		}
 		
@@ -374,7 +376,6 @@ package com.rightisleft.controllers
 			if (event.keyCode == 16)
 			{
 				_tileVOs.isFlagging = true
-					trace('isflagging true')
 			}
 			
 			//cheat key is c to showall

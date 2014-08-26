@@ -100,5 +100,11 @@ package com.rightisleft.models
 			trace('new game');
 			this.dispatchEvent(new GameEvent(GameEvent.GAME_STATE_EVENT, GameEvent.GAME_STATE_NEW) );
 		}
+		
+		public function reset():void
+		{
+			trace('reset game');
+			this.dispatchEvent(new GameEvent(GameEvent.GAME_STATE_EVENT, GameEvent.GAME_STATE_RESTART) );
+		}
 	}
 }

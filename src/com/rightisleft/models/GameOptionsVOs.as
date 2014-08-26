@@ -16,6 +16,7 @@ package com.rightisleft.models
 		private var _hardMode:BoardVO;
 		
 		public var board:BoardVO;
+		public var mode:String;
 			
 		public function GameOptionsVOs()
 		{
@@ -61,6 +62,8 @@ package com.rightisleft.models
 					onChange();
 					break;
 			}
+			
+			mode = value;
 		}
 		
 		private function onChange(value:* = null):void

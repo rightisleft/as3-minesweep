@@ -19,9 +19,9 @@ package com.rightisleft.controllers
 		private var _tileVOs:TileVOs;
 		private var _parent:DisplayObjectContainer;
 		private var _menuDispatcher:EventDispatcher;
-		private var _bar:TileBarController;
+		private var _bar:TopUIController;
 		
-		public function GameViewController(parent:DisplayObjectContainer, tileVOs:TileVOs, menuDispatcher:EventDispatcher, titleBar:TileBarController):void
+		public function GameViewController(parent:DisplayObjectContainer, tileVOs:TileVOs, menuDispatcher:EventDispatcher, titleBar:TopUIController):void
 		{			
 			_parent = parent;
 			_tileVOs = tileVOs;

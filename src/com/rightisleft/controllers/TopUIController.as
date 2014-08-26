@@ -2,6 +2,7 @@ package com.rightisleft.controllers
 {
 	
 	import com.rightisleft.events.GameEvent;
+	import com.rightisleft.models.GameOptionsVOs;
 	import com.rightisleft.models.TileVOs;
 	
 	import flash.display.DisplayObjectContainer;
@@ -9,7 +10,7 @@ package com.rightisleft.controllers
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 
-	public class TileBarController
+	public class TopUIController
 	{
 		private var _mineCount:TextField = new TextField();
 		private var _title:TextField = new TextField();
@@ -20,7 +21,7 @@ package com.rightisleft.controllers
 		
 		private var _tileVOs:TileVOs
 		
-		public function TileBarController(parent:DisplayObjectContainer, tiles:TileVOs)
+		public function TopUIController(parent:DisplayObjectContainer, tiles:TileVOs)
 		{
 			_ctrl = new GenericTextController("Akz", 16, 0xFFFFFF)
 			_ctrl.setText('MineSweep', _title)
@@ -73,7 +74,7 @@ package com.rightisleft.controllers
 		
 		private function onReset(event:MouseEvent):void 
 		{
-			
+			_tileVOs.reset();
 		}
 		
 		private function setCount(used:int, available:int):void
