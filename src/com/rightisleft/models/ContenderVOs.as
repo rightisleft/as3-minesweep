@@ -10,7 +10,7 @@ package com.rightisleft.models
 	{
 		
 		public var collectionOfContenders:Array = []
-		public var collectionOfMines:Array = [];		
+		public var collectionOfMines:Array = [];	
 		public var isFlagging:Boolean = false;
 		public var options:GameOptionsVOs
 		
