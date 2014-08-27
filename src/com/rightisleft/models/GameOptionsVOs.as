@@ -23,22 +23,22 @@ package com.rightisleft.models
 			_easyMode = new BoardVO();
 			_easyMode.columns = 9
 			_easyMode.rows = 9
-			_easyMode.tileHeight = 25 
-			_easyMode.tileWidth = 25 
+			_easyMode.height = 25 
+			_easyMode.width = 25 
 			_easyMode.mineCount = 10
 			
 			_mediumMode = new BoardVO();
 			_mediumMode.columns = 16
 			_mediumMode.rows = 16
-			_mediumMode.tileHeight = 25 
-			_mediumMode.tileWidth = 25
+			_mediumMode.height = 25 
+			_mediumMode.width = 25
 			_mediumMode.mineCount = 20
 			
 			_hardMode = new BoardVO();
 			_hardMode.columns = 32
 			_hardMode.rows = 16
-			_hardMode.tileHeight = 25
-			_hardMode.tileWidth = 25
+			_hardMode.height = 25
+			_hardMode.width = 25
 			_hardMode.mineCount = 50	
 				
 			board = _easyMode;
@@ -77,8 +77,8 @@ class BoardVO {
 	//default game values
 	public var columns:int
 	public var rows:int
-	public var tileHeight:int
-	public var tileWidth:int
+	public var height:int
+	public var width:int
 	public var mineCount:int
 	
 	public function BoardVO():void {}

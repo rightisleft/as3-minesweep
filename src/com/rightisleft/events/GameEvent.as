@@ -9,8 +9,8 @@ package com.rightisleft.events
 		
 		public static const RESULT_NEW:String = 'New!';
 		public static const RESULT_PLAYING:String = 'Play!';
-		public static const RESULT_LOST:String = 'You Lost!';
-		public static const RESULT_WON:String = 'You Won!';
+		public static const RESULT_CONTENDER_WON:String = 'You Lost!';
+		public static const RESULT_PLAYER_WON:String = 'You Won!';
 		public static const RESULT_RESTART:String = 'restart!';
 				
 		public var result:Object;

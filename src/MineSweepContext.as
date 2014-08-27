@@ -1,12 +1,11 @@
 package
 {
-	import com.rightisleft.controllers.GameViewController;
 	import com.rightisleft.controllers.LevelController;
 	import com.rightisleft.controllers.MineSweepController;
 	import com.rightisleft.controllers.TopUIController;
+	import com.rightisleft.models.ContenderVOs;
 	import com.rightisleft.models.GameOptionsVOs;
 	import com.rightisleft.models.GridVOs;
-	import com.rightisleft.models.TileVOs;
 	import com.rightisleft.views.GridView;
 	import com.rightisleft.views.LevelUIView;
 	
@@ -24,11 +23,10 @@ package
 		private var _gridView:GridView;
 
 		private var _mineSweepController:MineSweepController;
-		private var _tileVOs:TileVOs;
+		private var _contenderVOs:ContenderVOs;
 		private var _levelController:LevelController;
 		private var _levelUIView:LevelUIView;
 		private var _titleBar:TopUIController;
-		private var _gameViewController:GameViewController;
 		
 		public function MineSweepContext()
 		{	
@@ -42,11 +40,11 @@ package
 			
 			_gridVO = new GridVOs();	
 			
-			_tileVOs = new TileVOs(_gameOptions);
+			_contenderVOs = new ContenderVOs(_gameOptions);
 			
-			_titleBar = new TopUIController(this, _tileVOs);
+			_titleBar = new TopUIController(this, _contenderVOs);
 			
-			_mineSweepController = new MineSweepController(this, _tileVOs);
+			_mineSweepController = new MineSweepController(this, _contenderVOs);
 			
 			_mineSweepController.init(_gridVO, _gridView);		
 			
@@ -54,7 +52,7 @@ package
 
 			_levelController = new LevelController(this, _levelUIView)
 			
-			_levelController.init(_tileVOs);
+			_levelController.init(_contenderVOs);
 			
 			_levelController.enter();
 			
