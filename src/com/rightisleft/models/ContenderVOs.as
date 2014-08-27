@@ -28,7 +28,7 @@ package com.rightisleft.models
 		
 		public function getRandomVO():ContenderVO 
 		{
-			var index:int = int( Math.round( ( Math.random() * collectionOfContenders.length ) ) )
+			var index:int = int( Math.round( ( Math.random() * (collectionOfContenders.length - 1) ) ) )
 			return collectionOfContenders[index] as ContenderVO;
 		}
 		
