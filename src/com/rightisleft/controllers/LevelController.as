@@ -2,7 +2,7 @@ package com.rightisleft.controllers
 {
 	import com.rightisleft.events.GameEvent;
 	import com.rightisleft.models.GameOptionsVOs;
-	import com.rightisleft.models.TileVOs;
+	import com.rightisleft.models.ContenderVOs;
 	import com.rightisleft.views.LevelUIView;
 	
 	import flash.display.DisplayObjectContainer;
@@ -49,9 +49,9 @@ package com.rightisleft.controllers
 			}			
 		}
 		
-		public function init(tiles:TileVOs):void 
+		public function init(cvos:ContenderVOs):void 
 		{
-			_gameOptions = tiles.options;
+			_gameOptions = cvos.options;
 			
 			_view.init(GameOptionsVOs.MODES);
 			
@@ -60,10 +60,10 @@ package com.rightisleft.controllers
 				tf.addEventListener(MouseEvent.CLICK, onClick);
 			}
 			
-			tiles.addEventListener(GameEvent.EVENT_STATE, onTileStateChange);
+			cvos.addEventListener(GameEvent.EVENT_STATE, onContenderStateChange);
 		}
 		
-		private function onTileStateChange(event:GameEvent):void
+		private function onContenderStateChange(event:GameEvent):void
 		{
 			switch(event.result)
 			{

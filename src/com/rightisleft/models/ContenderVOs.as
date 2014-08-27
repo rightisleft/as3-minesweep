@@ -1,24 +1,24 @@
 package com.rightisleft.models
 {
 	import com.rightisleft.events.GameEvent;
-	import com.rightisleft.vos.TileVO;
+	import com.rightisleft.vos.ContenderVO;
 	
 	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
 
-	public class TileVOs extends EventDispatcher
+	public class ContenderVOs extends EventDispatcher
 	{
 		
-		public var collectionOfTiles:Array = []
+		public var collectionOfContenders:Array = []
 		public var collectionOfMines:Array = [];	
 			
 		public var isFlagging:Boolean = false;
 		
-		private var _flagsOnBoard:int;
+		private var _flaggedContenders:int;
 		
 		public var options:GameOptionsVOs
 		
-		public function TileVOs(mode:GameOptionsVOs)
+		public function ContenderVOs(mode:GameOptionsVOs)
 		{				
 			options = mode;
 			options.addEventListener(GameEvent.EVENT_STATE, onGameOptionEvent);
@@ -27,25 +27,25 @@ package com.rightisleft.models
 		public var incrementHandlers:Array = []		
 
 		
-		public function getRandomVO():TileVO 
+		public function getRandomVO():ContenderVO 
 		{
-			var index:int = int ( Math.random() * collectionOfTiles.length );
-			return collectionOfTiles[index] as TileVO;
+			var index:int = int ( Math.random() * collectionOfContenders.length );
+			return collectionOfContenders[index] as ContenderVO;
 		}
 		
 		private var _hash:Dictionary = new Dictionary();
-		public function getItemByID(id:String):TileVO
+		public function getVOByID(id:String):ContenderVO
 		{
 			if(_hash[id]) {
 				return _hash[id];
 			}
 			
-			for each(var tile:TileVO in collectionOfTiles)
+			for each(var contender:ContenderVO in collectionOfContenders)
 			{
-				_hash[tile.id] = tile;
-				if(tile.id == id)
+				_hash[contender.id] = contender;
+				if(contender.id == id)
 				{
-					return tile;
+					return contender;
 				}
 			}
 			
@@ -54,34 +54,34 @@ package com.rightisleft.models
 		
 		public function destroy():void 
 		{
-			for each(var tile:TileVO in collectionOfTiles)
+			for each(var contender:ContenderVO in collectionOfContenders)
 			{
-				tile = null;
+				contender = null;
 			}
 			
-			for each(var mine:TileVO in collectionOfMines)
+			for each(var mine:ContenderVO in collectionOfMines)
 			{
 				mine = null;
 			}
 			
-			_flagsOnBoard = 0;
+			_flaggedContenders = 0;
 			
 			_hash = new Dictionary();	
 						
-			collectionOfTiles = []
+			collectionOfContenders = []
 			
 			collectionOfMines = []				
 		}
 
-		public function get flagsOnBoard():int
+		public function get flaggedContenders():int
 		{
-			return _flagsOnBoard;
+			return _flaggedContenders;
 		}
 
-		public function set flagsOnBoard(value:int):void
+		public function set flaggedContenders(value:int):void
 		{
-			_flagsOnBoard = value;
-			this.dispatchEvent(new GameEvent(GameEvent.EVENT_DATA, _flagsOnBoard) );
+			_flaggedContenders = value;
+			this.dispatchEvent(new GameEvent(GameEvent.EVENT_DATA, _flaggedContenders) );
 		}
 		
 		private var _state:GameEvent;

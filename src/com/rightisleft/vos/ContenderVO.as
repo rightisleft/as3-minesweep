@@ -2,7 +2,7 @@ package com.rightisleft.vos
 {
 	import flash.display.BitmapData;
 	
-	public class TileVO
+	public class ContenderVO
 	{
 		
 		public static const STATE_LIVE:int = 1;
@@ -14,8 +14,8 @@ package com.rightisleft.vos
 		public static const TYPE_MINE:int = 1;
 		public static const TYPE_RISKY:int = 2;
 		
-		public var tileWidth:int;
-		public var tileHeight:int;
+		public var width:int;
+		public var height:int;
 		
 		public var type:int = -1;
 		public var id:String;
@@ -24,7 +24,7 @@ package com.rightisleft.vos
 		
 		private var _state:int;
 		
-		public function TileVO()
+		public function ContenderVO()
 		{
 			type = TYPE_OPEN;
 			state = STATE_LIVE;
@@ -47,7 +47,7 @@ package com.rightisleft.vos
 				return 'Flagged!';
 			}
 			
-			if(type == TileVO.TYPE_MINE)
+			if(type == ContenderVO.TYPE_MINE)
 			{
 				return "Mine!"
 			} 
@@ -62,23 +62,23 @@ package com.rightisleft.vos
 		public function get color():uint {
 			
 			if(state == STATE_LIVE) {
-				return TileColors.GRAY;
+				return ContenderColors.GRAY;
 			}
 			
 			if(state == STATE_FLAGGED) {
-				return TileColors.BLUE;
+				return ContenderColors.BLUE;
 			}
 			
-			if(type == TileVO.TYPE_MINE)
+			if(type == ContenderVO.TYPE_MINE)
 			{
-				return TileColors.RED;
+				return ContenderColors.RED;
 			} 
 			
 			if (danger_edges > 0) {
-				return TileColors.YELLOW;
+				return ContenderColors.YELLOW;
 			}
 			
-			return TileColors.GREEN;
+			return ContenderColors.GREEN;
 		}
 
 		public function get state():int
@@ -115,7 +115,7 @@ package com.rightisleft.vos
 		}
 	}
 }
-class TileColors {
+class ContenderColors {
 	public static const GREEN:uint = 0xFF336600;
 	public static const YELLOW:uint = 0xFFFFC809;
 	public static const RED:uint = 0xFFF80000;

@@ -9,7 +9,6 @@ package com.rightisleft.vos
 		private var _coardinate:Point;
 		private var _width:int;
 		private var _height:int;
-		private var _tileValue:int;
 		
 		public var bitmapData:BitmapData;
 
