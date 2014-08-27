@@ -21,7 +21,7 @@ package com.rightisleft.models
 		public function TileVOs(mode:GameOptionsVOs)
 		{				
 			options = mode;
-			options.addEventListener(GameEvent.EVENT_STATE, onGotoPlaying);
+			options.addEventListener(GameEvent.EVENT_STATE, onGameOptionEvent);
 		}
 		
 		public var incrementHandlers:Array = []		
@@ -120,7 +120,7 @@ package com.rightisleft.models
 
 		}
 		
-		private function onGotoPlaying(event:GameEvent):void {
+		private function onGameOptionEvent(event:GameEvent):void {
 			//redispatch gameoptions to simpify listeners, but maintain object hierarchy
 			_state = event;
 			this.dispatchEvent(event);
