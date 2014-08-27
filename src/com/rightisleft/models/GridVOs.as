@@ -1,10 +1,10 @@
 package com.rightisleft.models
 {	
-	import flash.events.Event;
+	import com.rightisleft.vos.GridCellVO;
+	
 	import flash.events.EventDispatcher;
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
-	import com.rightisleft.vos.GridCellVO;
 
 	public class GridVOs extends EventDispatcher
 	{

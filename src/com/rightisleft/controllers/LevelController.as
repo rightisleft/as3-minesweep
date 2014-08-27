@@ -1,8 +1,8 @@
 package com.rightisleft.controllers
 {
 	import com.rightisleft.events.GameEvent;
-	import com.rightisleft.models.GameOptionsVOs;
 	import com.rightisleft.models.ContenderVOs;
+	import com.rightisleft.models.GameOptionsVOs;
 	import com.rightisleft.views.LevelUIView;
 	
 	import flash.display.DisplayObjectContainer;

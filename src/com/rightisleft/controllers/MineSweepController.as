@@ -1,19 +1,18 @@
 package com.rightisleft.controllers
 {
 	import com.rightisleft.events.GameEvent;
-	import com.rightisleft.models.GridVOs;
 	import com.rightisleft.models.ContenderVOs;
+	import com.rightisleft.models.GridVOs;
 	import com.rightisleft.views.GridView;
-	import com.rightisleft.vos.GridCellVO;
 	import com.rightisleft.vos.ContenderVO;
+	import com.rightisleft.vos.GridCellVO;
 	
 	import flash.display.DisplayObjectContainer;
-	import flash.events.EventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 
 
-	public class MineSweepController extends EventDispatcher
+	public class MineSweepController
 	{
 		//members objects
 		private var _contenderVOs:ContenderVOs
