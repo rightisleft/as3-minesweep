@@ -2,7 +2,6 @@ package com.rightisleft.controllers
 {
 	
 	import com.rightisleft.events.GameEvent;
-	import com.rightisleft.models.GameOptionsVOs;
 	import com.rightisleft.models.TileVOs;
 	
 	import flash.display.DisplayObjectContainer;
@@ -41,14 +40,13 @@ package com.rightisleft.controllers
 			_ctrl.setText('Reset', _reset);
 			_reset.x = parent.stage.stageWidth - _reset.textWidth -10;
 			_reset.addEventListener(MouseEvent.CLICK, onReset);
+		
 			
 			_display.addChild(_title)
 			_display.addChild(_mineCount)
-			_display.addChild(_reset);
 			
-			_tileVOs.addEventListener(GameEvent.GAME_DATA_EVENT_FLAGS, onDataChange);
-			_tileVOs.addEventListener(GameEvent.GAME_STATE_EVENT, onStateChange);
-			_tileVOs.options.addEventListener(GameEvent.GAME_STATE_EVENT, onStateChange);
+			_tileVOs.addEventListener(GameEvent.EVENT_DATA, onDataChange);
+			_tileVOs.addEventListener(GameEvent.EVENT_STATE, onStateChange);
 			
 		}
 		
@@ -56,13 +54,15 @@ package com.rightisleft.controllers
 		{
 			switch(event.result)
 			{
-				case GameEvent.GAME_STATE_YOU_WON:
-				case GameEvent.GAME_STATE_YOU_LOST:
+				case GameEvent.RESULT_WON:
+				case GameEvent.RESULT_LOST:
 					_ctrl.setText( event.result as String, _mineCount);
+					_display.removeChild(_reset);
 					break;
 				
-				case GameEvent.GAME_STATE_PLAYING:
+				case GameEvent.RESULT_PLAYING:
 					onDataChange(event)
+					_display.addChild(_reset);
 					break;
 			}
 		}

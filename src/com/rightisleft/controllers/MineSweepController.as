@@ -30,8 +30,7 @@ package com.rightisleft.controllers
 			_parent = parent;
 			
 			//thise are state change listeners - do not remove since this will add the grid to the stage
-			_tileVOs.options.addEventListener(GameEvent.GAME_STATE_EVENT, onGameEvent);
-			_tileVOs.addEventListener(GameEvent.GAME_STATE_EVENT, onGameEvent);
+			_tileVOs.addEventListener(GameEvent.EVENT_STATE, onGameEvent);
 		}
 		
 		//observer pattern would be better
@@ -337,20 +336,20 @@ package com.rightisleft.controllers
 		{
 			switch(event.result)
 			{
-				case GameEvent.GAME_STATE_PLAYING:
+				case GameEvent.RESULT_PLAYING:
 					enter();
 					break
 				
-				case GameEvent.GAME_STATE_YOU_LOST:
-				case GameEvent.GAME_STATE_YOU_WON:
+				case GameEvent.RESULT_LOST:
+				case GameEvent.RESULT_WON:
 					showRemainingMines();
 					turnOffPlayListeners();
 					_gridView.addEventListener(MouseEvent.CLICK, onGotoLevelMenu);
 					break;
-				case GameEvent.GAME_STATE_NEW:
+				case GameEvent.RESULT_NEW:
 					exit();
 					break;
-				case GameEvent.GAME_STATE_RESTART:
+				case GameEvent.RESULT_RESTART:
 					exit();
 					enter();
 					break;

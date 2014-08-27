@@ -25,7 +25,7 @@ package com.rightisleft.models
 			_easyMode.rows = 9
 			_easyMode.tileHeight = 25 
 			_easyMode.tileWidth = 25 
-			_easyMode.mineCount = 1
+			_easyMode.mineCount = 10
 			
 			_mediumMode = new BoardVO();
 			_mediumMode.columns = 16
@@ -68,7 +68,7 @@ package com.rightisleft.models
 		
 		private function onChange(value:* = null):void
 		{
-			this.dispatchEvent(new GameEvent(GameEvent.GAME_STATE_EVENT, GameEvent.GAME_STATE_PLAYING) );
+			this.dispatchEvent(new GameEvent(GameEvent.EVENT_STATE, GameEvent.RESULT_PLAYING) );
 		}
 	}
 }

@@ -21,6 +21,7 @@ package com.rightisleft.models
 		public function TileVOs(mode:GameOptionsVOs)
 		{				
 			options = mode;
+			options.addEventListener(GameEvent.EVENT_STATE, onGotoPlaying);
 		}
 		
 		public var incrementHandlers:Array = []		
@@ -80,31 +81,49 @@ package com.rightisleft.models
 		public function set flagsOnBoard(value:int):void
 		{
 			_flagsOnBoard = value;
-			this.dispatchEvent(new GameEvent(GameEvent.GAME_DATA_EVENT_FLAGS, _flagsOnBoard) );
+			this.dispatchEvent(new GameEvent(GameEvent.EVENT_DATA, _flagsOnBoard) );
 		}
 		
+		private var _state:GameEvent;
 		public function win():void
 		{
-			trace('you win');
-			this.dispatchEvent(new GameEvent(GameEvent.GAME_STATE_EVENT, GameEvent.GAME_STATE_YOU_WON) );
+			_state = new GameEvent(GameEvent.EVENT_STATE, GameEvent.RESULT_WON);
+			this.dispatchEvent( _state );
 		}
 		
 		public function lose():void
 		{
-			trace('you lose');
-			this.dispatchEvent(new GameEvent(GameEvent.GAME_STATE_EVENT, GameEvent.GAME_STATE_YOU_LOST) );
+			_state = new GameEvent(GameEvent.EVENT_STATE, GameEvent.RESULT_LOST);
+			this.dispatchEvent( _state );		
 		}
 		
 		public function newGame():void
 		{
-			trace('new game');
-			this.dispatchEvent(new GameEvent(GameEvent.GAME_STATE_EVENT, GameEvent.GAME_STATE_NEW) );
+			_state = new GameEvent(GameEvent.EVENT_STATE, GameEvent.RESULT_NEW);
+			this.dispatchEvent( _state );		
 		}
 		
 		public function reset():void
 		{
-			trace('reset game');
-			this.dispatchEvent(new GameEvent(GameEvent.GAME_STATE_EVENT, GameEvent.GAME_STATE_RESTART) );
+			switch(_state.result)
+			{
+				case GameEvent.RESULT_WON:
+				case GameEvent.RESULT_LOST:
+					return; //Cant reset a game you already finished
+				break;
+				
+				default:
+					_state = new GameEvent(GameEvent.EVENT_STATE, GameEvent.RESULT_RESTART);
+					this.dispatchEvent(new GameEvent(GameEvent.EVENT_STATE, GameEvent.RESULT_RESTART) );
+				break;
+			}
+
+		}
+		
+		private function onGotoPlaying(event:GameEvent):void {
+			//redispatch gameoptions to simpify listeners, but maintain object hierarchy
+			_state = event;
+			this.dispatchEvent(event);
 		}
 	}
 }

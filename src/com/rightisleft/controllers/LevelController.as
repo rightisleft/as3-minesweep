@@ -60,19 +60,18 @@ package com.rightisleft.controllers
 				tf.addEventListener(MouseEvent.CLICK, onClick);
 			}
 			
-			tiles.addEventListener(GameEvent.GAME_STATE_EVENT, onTileStateChange);
-			tiles.options.addEventListener(GameEvent.GAME_STATE_EVENT, onTileStateChange);
+			tiles.addEventListener(GameEvent.EVENT_STATE, onTileStateChange);
 		}
 		
 		private function onTileStateChange(event:GameEvent):void
 		{
 			switch(event.result)
 			{
-				case GameEvent.GAME_STATE_NEW:
+				case GameEvent.RESULT_NEW:
 					enter();
 					break;
 				
-				case GameEvent.GAME_STATE_PLAYING:
+				case GameEvent.RESULT_PLAYING:
 					exit();
 					break;
 			}
