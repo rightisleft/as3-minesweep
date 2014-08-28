@@ -46,7 +46,6 @@ package com.rightisleft.controllers
 					snapshot = _textHash[textValue]; //cached
 				} else {
 					_textField.text = textValue; 
-					
 					snapshot = new BitmapData(_textField.width, _textField.height, true, 0x00FFFFFF);
 					snapshot.draw(_textField, new Matrix() );
 					_textHash[textValue] = snapshot;
@@ -59,7 +58,9 @@ package com.rightisleft.controllers
 			//compose text onto square
 			if(snapshot) {
 				var rect:Rectangle = new Rectangle(0, 0, _textField.width, _textField.height);
-				var aPoint:Point = new Point();
+				var aPoint:Point = new Point()
+				aPoint.x = (vo.width * .5) - (_textField.width * .5);
+				aPoint.y = (vo.height * .5) - (_textField.height * .5);
 				vo.bmpd.copyPixels(snapshot, rect, aPoint, null, null, true);	
 			}
 			

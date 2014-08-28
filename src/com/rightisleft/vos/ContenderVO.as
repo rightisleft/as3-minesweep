@@ -44,12 +44,12 @@ package com.rightisleft.vos
 			
 			if(state == STATE_FLAGGED)
 			{
-				return 'Flagged!';
+				return 'F';
 			}
 			
 			if(type == ContenderVO.TYPE_MINE)
 			{
-				return "Mine!"
+				return "M"
 			} 
 			
 			if (danger_edges > 0) {
