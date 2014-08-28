@@ -9,8 +9,8 @@ package com.rightisleft.models
 	public class ContenderVOs extends EventDispatcher
 	{
 		
-		public var collectionOfContenders:Array = []
-		public var collectionOfMines:Array = [];	
+		public var collectionOfContenders:Vector.<ContenderVO> = new Vector.<ContenderVO>();
+		public var collectionOfMines:Vector.<ContenderVO> = new Vector.<ContenderVO>();
 		public var isFlagging:Boolean = false;
 		public var options:GameOptionsVOs
 		
@@ -67,9 +67,9 @@ package com.rightisleft.models
 			
 			_hash = new Dictionary();	
 						
-			collectionOfContenders = []
+			collectionOfContenders.length = 0;
 			
-			collectionOfMines = []				
+			collectionOfMines.length = 0;				
 		}
 
 		public function get flaggedContenders():int

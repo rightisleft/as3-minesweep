@@ -10,8 +10,8 @@ package com.rightisleft.models
 	{
 		private var _rowCount:int;
 		private var _columnCount:int;
-		public var collection:Array = [];
-		private var _columns:Array;
+		public var collection:Vector.<GridCellVO> = new Vector.<GridCellVO>;
+		private var _columns:Vector.<Vector.<GridCellVO>>;
 		
 		private var _cellHeight:int;
 		private var _cellWidth:int;
@@ -20,7 +20,7 @@ package com.rightisleft.models
 
 		public function GridVOs()
 		{
-			_columns = [];			
+			_columns = new Vector.<Vector.<GridCellVO>>();			
 		}
 		
 		public function get gridWidth():int
@@ -43,7 +43,7 @@ package com.rightisleft.models
 			//turn this into a recursive function?
 			for(var i:int = 0; i < _rowCount; i++) {
 				
-				var aColumn:Array = [];
+				var aColumn:Vector.<GridCellVO> = new Vector.<GridCellVO>();
 				var _previousCell:GridCellVO
 
 				for (var j:int = 0; j < _columnCount; j++) 
@@ -197,7 +197,9 @@ package com.rightisleft.models
 				cell = null;
 			}
 			
-			collection = [];
+			collection.length = 0;
+			
+			_columns.length = 0;
 			
 			_idHash = new Dictionary();
 		}
