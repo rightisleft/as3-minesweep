@@ -6,7 +6,7 @@ package com.rightisleft.models
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 
-	public class GridVOs extends EventDispatcher
+	public class GridModel extends EventDispatcher
 	{
 		private var _rowCount:int;
 		private var _columnCount:int;
@@ -18,7 +18,7 @@ package com.rightisleft.models
 		
 		private var _idHash:Dictionary = new Dictionary();
 
-		public function GridVOs()
+		public function GridModel()
 		{
 			_columns = new Vector.<Vector.<GridCellVO>>();			
 		}

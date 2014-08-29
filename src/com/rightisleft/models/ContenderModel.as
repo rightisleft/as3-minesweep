@@ -7,18 +7,18 @@ package com.rightisleft.models
 	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
 
-	public class ContenderVOs extends EventDispatcher
+	public class ContenderModel extends EventDispatcher
 	{
 		
-		public var collectionOfContenders:Vector.<ContenderVO> = new Vector.<ContenderVO>();
-		public var collectionOfMines:Vector.<ContenderVO> = new Vector.<ContenderVO>();
+		public var contenders:Vector.<ContenderVO> = new Vector.<ContenderVO>();
+		public var mines:Vector.<ContenderVO> = new Vector.<ContenderVO>();
 		public var isFlagging:Boolean = false;
-		public var options:GameOptionsVOs
+		public var options:GameOptionsModel
 		
 		private var _state:GameEvent;
 		private var _flaggedContenders:int;
 		
-		public function ContenderVOs(mode:GameOptionsVOs)
+		public function ContenderModel(mode:GameOptionsModel)
 		{				
 			options = mode;
 			options.addEventListener(GameEvent.EVENT_STATE, onGameOptionEvent);
@@ -46,7 +46,7 @@ package com.rightisleft.models
 				}
 				
 				acontender.type = ContenderVO.TYPE_MINE;
-				collectionOfMines.push(acontender);
+				mines.push(acontender);
 				if(closure)
 				{
 					closure(acontender);
@@ -56,8 +56,8 @@ package com.rightisleft.models
 		
 		public function getRandomVO():ContenderVO 
 		{
-			var index:int = int( Math.round( ( Math.random() * (collectionOfContenders.length - 1) ) ) )
-			return collectionOfContenders[index] as ContenderVO;
+			var index:int = int( Math.round( ( Math.random() * (contenders.length - 1) ) ) )
+			return contenders[index] as ContenderVO;
 		}
 		
 		private var _hash:Dictionary = new Dictionary();
@@ -67,7 +67,7 @@ package com.rightisleft.models
 				return _hash[id];
 			}
 			
-			for each(var contender:ContenderVO in collectionOfContenders)
+			for each(var contender:ContenderVO in contenders)
 			{
 				_hash[contender.id] = contender;
 				if(contender.id == id)
@@ -81,12 +81,12 @@ package com.rightisleft.models
 		
 		public function destroy():void 
 		{
-			for each(var contender:ContenderVO in collectionOfContenders)
+			for each(var contender:ContenderVO in contenders)
 			{
 				contender = null;
 			}
 			
-			for each(var mine:ContenderVO in collectionOfMines)
+			for each(var mine:ContenderVO in mines)
 			{
 				mine = null;
 			}
@@ -95,9 +95,9 @@ package com.rightisleft.models
 			
 			_hash = new Dictionary();	
 						
-			collectionOfContenders.length = 0;
+			contenders.length = 0;
 			
-			collectionOfMines.length = 0;				
+			mines.length = 0;				
 		}
 
 		public function get flaggedContenders():int

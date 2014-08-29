@@ -3,9 +3,9 @@ package
 	import com.rightisleft.controllers.LevelController;
 	import com.rightisleft.controllers.MineSweepController;
 	import com.rightisleft.controllers.TopUIController;
-	import com.rightisleft.models.ContenderVOs;
-	import com.rightisleft.models.GameOptionsVOs;
-	import com.rightisleft.models.GridVOs;
+	import com.rightisleft.models.ContenderModel;
+	import com.rightisleft.models.GameOptionsModel;
+	import com.rightisleft.models.GridModel;
 	import com.rightisleft.views.GridView;
 	import com.rightisleft.views.LevelUIView;
 	
@@ -17,13 +17,13 @@ package
 	
 	public class MineSweepContext extends Sprite
 	{				
-		private var _gameOptions:GameOptionsVOs;
+		private var _gameModel:GameOptionsModel;
 
-		private var _gridVO:GridVOs;
+		private var _gridVO:GridModel;
 		private var _gridView:GridView;
 
 		private var _mineSweepController:MineSweepController;
-		private var _contenderVOs:ContenderVOs;
+		private var _contenderModel:ContenderModel;
 		private var _levelController:LevelController;
 		private var _levelUIView:LevelUIView;
 		private var _titleBar:TopUIController;
@@ -34,17 +34,17 @@ package
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 
 			//Class of static config options
-			_gameOptions = new GameOptionsVOs();
+			_gameModel = new GameOptionsModel();
 						
 			_gridView = new GridView(this);			
 			
-			_gridVO = new GridVOs();	
+			_gridVO = new GridModel();	
 			
-			_contenderVOs = new ContenderVOs(_gameOptions);
+			_contenderModel = new ContenderModel(_gameModel);
 			
-			_titleBar = new TopUIController(this, _contenderVOs);
+			_titleBar = new TopUIController(this, _contenderModel);
 			
-			_mineSweepController = new MineSweepController(this, _contenderVOs);
+			_mineSweepController = new MineSweepController(this, _contenderModel);
 			
 			_mineSweepController.init(_gridVO, _gridView);		
 			
@@ -52,7 +52,7 @@ package
 
 			_levelController = new LevelController(this, _levelUIView)
 			
-			_levelController.init(_contenderVOs);
+			_levelController.init(_contenderModel);
 			
 			_levelController.enter();
 			

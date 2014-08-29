@@ -2,7 +2,7 @@ package com.rightisleft.controllers
 {
 	
 	import com.rightisleft.events.GameEvent;
-	import com.rightisleft.models.ContenderVOs;
+	import com.rightisleft.models.ContenderModel;
 	
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
@@ -18,14 +18,14 @@ package com.rightisleft.controllers
 		
 		private var _display:Sprite = new Sprite();
 		
-		private var _contenderVOs:ContenderVOs
+		private var _contenderModel:ContenderModel
 		
-		public function TopUIController(parent:DisplayObjectContainer, contenders:ContenderVOs)
+		public function TopUIController(parent:DisplayObjectContainer, contenderModel:ContenderModel)
 		{
 			_ctrl = new GenericTextController("Akz", 16, 0x505050)
 			_ctrl.setText('MineSweep', _title)
 				
-			_contenderVOs = contenders;
+			_contenderModel = contenderModel;
 				
 			parent.addChild( _display );
 			
@@ -45,8 +45,8 @@ package com.rightisleft.controllers
 			_display.addChild(_title)
 			_display.addChild(_mineCount)
 			
-			_contenderVOs.addEventListener(GameEvent.EVENT_DATA, onDataChange);
-			_contenderVOs.addEventListener(GameEvent.EVENT_STATE, onStateChange);
+			_contenderModel.addEventListener(GameEvent.EVENT_DATA, onDataChange);
+			_contenderModel.addEventListener(GameEvent.EVENT_STATE, onStateChange);
 			
 		}
 		
@@ -69,12 +69,12 @@ package com.rightisleft.controllers
 		
 		private function onDataChange(event:GameEvent):void
 		{
-			setCount(_contenderVOs.flaggedContenders, _contenderVOs.options.board.mineCount);
+			setCount(_contenderModel.flaggedContenders, _contenderModel.options.board.mineCount);
 		}
 		
 		private function onReset(event:MouseEvent):void 
 		{
-			_contenderVOs.reset();
+			_contenderModel.reset();
 		}
 		
 		private function setCount(used:int, available:int):void

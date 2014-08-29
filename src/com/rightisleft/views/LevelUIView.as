@@ -9,12 +9,10 @@ package com.rightisleft.views
 	public class LevelUIView extends Sprite
 	{
 		private var _parent:DisplayObjectContainer;
-		private var _clickBlocker:Sprite = new Sprite();
 
 		public function LevelUIView(parent:DisplayObjectContainer)
 		{
 			_parent = parent;
-			this.addChild(_clickBlocker);
 		}
 		
 		private var _leveltext:Array;

@@ -4,7 +4,7 @@ package com.rightisleft.models
 	
 	import flash.events.EventDispatcher;
 
-	public class GameOptionsVOs extends EventDispatcher
+	public class GameOptionsModel extends EventDispatcher
 	{
 		public static const MODE_EASY:String = 'easy';
 		public static const MODE_MEDIUM:String = 'medium';
@@ -18,7 +18,7 @@ package com.rightisleft.models
 		public var board:BoardVO;
 		public var mode:String;
 			
-		public function GameOptionsVOs()
+		public function GameOptionsModel()
 		{
 			_easyMode = new BoardVO();
 			_easyMode.columns = 9

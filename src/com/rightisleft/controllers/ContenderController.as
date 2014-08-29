@@ -1,6 +1,6 @@
 package com.rightisleft.controllers
 {
-	import com.rightisleft.models.ContenderVOs;
+	import com.rightisleft.models.ContenderModel;
 	import com.rightisleft.vos.ContenderVO;
 	
 	import flash.display.BitmapData;
@@ -14,15 +14,14 @@ package com.rightisleft.controllers
 
 	public class ContenderController
 	{
-		private var _contenderVOs:ContenderVOs;
-		
+		private var _contenderModel:ContenderModel;
 		private var _textField:TextField;
 		private var _textHash:Dictionary = new Dictionary();
 		private var _bevelFilter:BevelFilter;
 		
-		public function ContenderController(vos:ContenderVOs)
+		public function ContenderController(model:ContenderModel)
 		{
-			_contenderVOs = vos;
+			_contenderModel = model;
 
 			_textField = new TextField();
 			new GenericTextController('Akz', 10, 0x000000).setText('', _textField);
@@ -75,13 +74,13 @@ package com.rightisleft.controllers
 			
 			if(vo && vo.type == ContenderVO.TYPE_MINE && vo.state == ContenderVO.STATE_EXPLODED)
 			{
-				_contenderVOs.defeatPlayer();
+				_contenderModel.defeatPlayer();
 				return;
 			}
 			
 			var isAMineStillActive:Boolean = false; //could increment a count instead of looping - insignificant performance at this stage
 			
-			for each(var contender:ContenderVO in _contenderVOs.collectionOfMines)
+			for each(var contender:ContenderVO in _contenderModel.mines)
 			{
 				if(contender.state != ContenderVO.STATE_FLAGGED)
 				{
@@ -92,7 +91,7 @@ package com.rightisleft.controllers
 			
 			if(isAMineStillActive == false)
 			{
-				_contenderVOs.loseToPlayer();
+				_contenderModel.loseToPlayer();
 			}
 		}
 	}

@@ -1,8 +1,8 @@
 package com.rightisleft.controllers
 {
 	import com.rightisleft.events.GameEvent;
-	import com.rightisleft.models.ContenderVOs;
-	import com.rightisleft.models.GridVOs;
+	import com.rightisleft.models.ContenderModel;
+	import com.rightisleft.models.GridModel;
 	import com.rightisleft.views.GridView;
 	import com.rightisleft.vos.ContenderVO;
 	import com.rightisleft.vos.GridCellVO;
@@ -15,21 +15,21 @@ package com.rightisleft.controllers
 	public class MineSweepController
 	{
 		//members objects
-		private var _contenderVOs:ContenderVOs
+		private var _contenderModel:ContenderModel
 		
 		private var _gridView:GridView;
-		private var _gridVOs:GridVOs;
+		private var _gridModel:GridModel;
 		
 		private var _parent:DisplayObjectContainer;
 		private var _contenderController:ContenderController;
 		
-		public function MineSweepController(parent:DisplayObjectContainer, cvos:ContenderVOs)
+		public function MineSweepController(parent:DisplayObjectContainer, cmodel:ContenderModel)
 		{		
-			_contenderVOs = cvos;
+			_contenderModel = cmodel;
 			_parent = parent;
 			
 			//thise are state change listeners - do not remove since this will add the grid to the stage
-			_contenderVOs.addEventListener(GameEvent.EVENT_STATE, onGameEvent);
+			_contenderModel.addEventListener(GameEvent.EVENT_STATE, onGameEvent);
 		}
 		
 		//observer pattern would be better
@@ -47,12 +47,12 @@ package com.rightisleft.controllers
 			_gridView.removeEventListener(MouseEvent.CLICK, onClick);
 		}
 		
-		public function init(gridVOs:GridVOs, gridView:GridView):void {
+		public function init(gridVOs:GridModel, gridView:GridView):void {
 			
 			_gridView = gridView;
-			_gridVOs = gridVOs;
+			_gridModel = gridVOs;
 			
-			_contenderController = new ContenderController(_contenderVOs);
+			_contenderController = new ContenderController(_contenderModel);
 		}
 				
 		public function exit():void {
@@ -61,21 +61,21 @@ package com.rightisleft.controllers
 			
 			_parent.removeChild(_gridView);
 			
-			_gridVOs.destroy();	
+			_gridModel.destroy();	
 			_gridView.destroy();			
-			_contenderVOs.destroy();
+			_contenderModel.destroy();
 		}
 		
 		public function enter():void {
 			
 			_gridView.init();
 
-			_gridVOs.init( _contenderVOs.options.board.columns, _contenderVOs.options.board.rows, _contenderVOs.options.board.height, _contenderVOs.options.board.width)
+			_gridModel.init( _contenderModel.options.board.columns, _contenderModel.options.board.rows, _contenderModel.options.board.height, _contenderModel.options.board.width)
 
 			_gridView.lock();
 			
 			//Create & Bind GridCells to contenders
-			for each (var cell:GridCellVO in _gridVOs.collection) 
+			for each (var cell:GridCellVO in _gridModel.collection) 
 			{
 				var contender:ContenderVO = new ContenderVO();
 				
@@ -83,10 +83,10 @@ package com.rightisleft.controllers
 				contender.addUpdateHanlder( onBmpd )
 				cell.addUpdateHanlder( _gridView.updateCell );
 					
-				contender.width = _contenderVOs.options.board.width;
-				contender.height = _contenderVOs.options.board.height;
+				contender.width = _contenderModel.options.board.width;
+				contender.height = _contenderModel.options.board.height;
 				
-				_contenderVOs.collectionOfContenders.push ( contender );
+				_contenderModel.contenders.push ( contender );
 				
 				_contenderController.paint(contender);
 			}
@@ -95,7 +95,7 @@ package com.rightisleft.controllers
 					
 			_parent.addChild(_gridView);
 			_parent.stage.focus = _parent.stage
-			_gridView.x = (_gridView.stage.stageWidth * .5) - (_gridVOs.gridWidth * .5);
+			_gridView.x = (_gridView.stage.stageWidth * .5) - (_gridModel.gridWidth * .5);
 			
 			turnOnPlayListeners();
 		}
@@ -103,7 +103,7 @@ package com.rightisleft.controllers
 		//cheat
 		public function showAll():void {
 			_gridView.lock();
-			for each(var acontender:ContenderVO in _contenderVOs.collectionOfContenders)
+			for each(var acontender:ContenderVO in _contenderModel.contenders)
 			{
 				acontender.state = ContenderVO.STATE_CLEARED;
 				_contenderController.paint(acontender);
@@ -114,7 +114,7 @@ package com.rightisleft.controllers
 		private function showRemainingMines():void
 		{
 			_gridView.lock();
-			for each(var acontender:ContenderVO in _contenderVOs.collectionOfMines)
+			for each(var acontender:ContenderVO in _contenderModel.mines)
 			{
 				if(acontender.type == ContenderVO.TYPE_MINE && acontender.state != ContenderVO.STATE_FLAGGED)
 				{
@@ -127,7 +127,7 @@ package com.rightisleft.controllers
 		
 		private function onBmpd(contenderVO:ContenderVO):void
 		{
-			var cell:GridCellVO = _gridVOs.getCellByID(contenderVO.id);
+			var cell:GridCellVO = _gridModel.getCellByID(contenderVO.id);
 			cell.bitmapData = contenderVO.bmpd;
 			cell.updated();
 		}
@@ -135,30 +135,30 @@ package com.rightisleft.controllers
 		private function alertNeighbors(contender:ContenderVO):void
 		{
 			var nextCell:GridCellVO; 
-			var originCell:GridCellVO = _gridVOs.getCellByID(contender.id);
+			var originCell:GridCellVO = _gridModel.getCellByID(contender.id);
 			
-			nextCell = _gridVOs.getCellToNorthOf(originCell)
+			nextCell = _gridModel.getCellToNorthOf(originCell)
 			incrementDanger(nextCell);
 				
-			nextCell = _gridVOs.getCellToSouthOf(originCell)
+			nextCell = _gridModel.getCellToSouthOf(originCell)
 			incrementDanger(nextCell);
 				
-			nextCell = _gridVOs.getCellToEastOf(originCell)
+			nextCell = _gridModel.getCellToEastOf(originCell)
 			incrementDanger(nextCell);
 				
-			nextCell = _gridVOs.getCellToWestOf(originCell)
+			nextCell = _gridModel.getCellToWestOf(originCell)
 			incrementDanger(nextCell);
 			
-			nextCell = _gridVOs.getCellToNorthWestOf(originCell)
+			nextCell = _gridModel.getCellToNorthWestOf(originCell)
 			incrementDanger(nextCell);
 			
-			nextCell = _gridVOs.getCellToNorthEastOf(originCell)
+			nextCell = _gridModel.getCellToNorthEastOf(originCell)
 			incrementDanger(nextCell);
 			
-			nextCell = _gridVOs.getCellToSouthEastOf(originCell)
+			nextCell = _gridModel.getCellToSouthEastOf(originCell)
 			incrementDanger(nextCell);
 			
-			nextCell = _gridVOs.getCellToSouthWestOf(originCell)
+			nextCell = _gridModel.getCellToSouthWestOf(originCell)
 			incrementDanger(nextCell);
 		}
 		
@@ -167,7 +167,7 @@ package com.rightisleft.controllers
 			var nextcontender:ContenderVO;
 			if(cell != null)
 			{
-				nextcontender = _contenderVOs.getVOByID(cell.id);		
+				nextcontender = _contenderModel.getVOByID(cell.id);		
 				if(nextcontender && nextcontender.type != ContenderVO.TYPE_MINE)
 				{
 					nextcontender.addDangerEdge();
@@ -177,7 +177,7 @@ package com.rightisleft.controllers
 		
 		private function onClick(event:MouseEvent):void 
 		{
-			var clickedCell:GridCellVO = _gridVOs.getCellByLocalCoardinate(event.localX, event.localY);
+			var clickedCell:GridCellVO = _gridModel.getCellByLocalCoardinate(event.localX, event.localY);
 			validateBoardMines(clickedCell)			
 			toggleContender(clickedCell);
 		}
@@ -185,9 +185,9 @@ package com.rightisleft.controllers
 		private function validateBoardMines(clickedCell:GridCellVO):void
 		{
 			//is new board? 
-			if(_contenderVOs.collectionOfMines.length != _contenderVOs.options.board.mineCount)
+			if(_contenderModel.mines.length != _contenderModel.options.board.mineCount)
 			{
-				_contenderVOs.generateMines(clickedCell, alertNeighbors);
+				_contenderModel.generateMines(clickedCell, alertNeighbors);
 			}
 		}
 		
@@ -197,7 +197,7 @@ package com.rightisleft.controllers
 			
 			if(clickedCell) 
 			{		
-				cvo = _contenderVOs.getVOByID(clickedCell.id);
+				cvo = _contenderModel.getVOByID(clickedCell.id);
 			}
 			
 			if(!cvo)
@@ -208,7 +208,7 @@ package com.rightisleft.controllers
 			var oState:int = cvo.state
 			var oType:int = cvo.type
 			var nState:int;
-			var isToggleFlag:Boolean = _contenderVOs.isFlagging;
+			var isToggleFlag:Boolean = _contenderModel.isFlagging;
 			var newState:int;
 			
 			//get state
@@ -226,7 +226,7 @@ package com.rightisleft.controllers
 				if(oState == ContenderVO.STATE_LIVE)
 				{
 					//enforce max flag count
-					if(_contenderVOs.flaggedContenders >= _contenderVOs.options.board.mineCount) {
+					if(_contenderModel.flaggedContenders >= _contenderModel.options.board.mineCount) {
 						return;
 					}
 					
@@ -259,12 +259,12 @@ package com.rightisleft.controllers
 			
 			if(newState == ContenderVO.STATE_FLAGGED)
 			{
-				_contenderVOs.flaggedContenders++
+				_contenderModel.flaggedContenders++
 			}
 			
 			if(oState == ContenderVO.STATE_FLAGGED && newState == ContenderVO.STATE_LIVE)
 			{
-				_contenderVOs.flaggedContenders--
+				_contenderModel.flaggedContenders--
 			}
 			
 			
@@ -310,11 +310,11 @@ package com.rightisleft.controllers
 			{
 				for each(var direction:String in _directions) 
 				{
-					_nextCell = _gridVOs.getNieghborCellByDirection(node.id, direction)
+					_nextCell = _gridModel.getNieghborCellByDirection(node.id, direction)
 					
 					if(_nextCell)
 					{
-						_nextcontender = _contenderVOs.getVOByID(_nextCell.id); 
+						_nextcontender = _contenderModel.getVOByID(_nextCell.id); 
 						if(_nextcontender) 
 						{
 							clearOpenFlood(_nextcontender, closure);	
@@ -351,13 +351,13 @@ package com.rightisleft.controllers
 		private function onGotoLevelMenu(e:MouseEvent):void
 		{
 			_gridView.removeEventListener(MouseEvent.CLICK, onGotoLevelMenu);
-			_contenderVOs.newGame();
+			_contenderModel.newGame();
 		}
 		
 		private function onKeyUp(event:KeyboardEvent):void{
 			if (event.keyCode == 16)
 			{
-				_contenderVOs.isFlagging = false
+				_contenderModel.isFlagging = false
 			}
 		}
 		
@@ -366,7 +366,7 @@ package com.rightisleft.controllers
 			//should store depressed keys			
 			if (event.keyCode == 16)
 			{
-				_contenderVOs.isFlagging = true
+				_contenderModel.isFlagging = true
 			}
 			
 			//cheat key is c to showall

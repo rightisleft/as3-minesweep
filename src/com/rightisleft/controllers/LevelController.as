@@ -1,8 +1,8 @@
 package com.rightisleft.controllers
 {
 	import com.rightisleft.events.GameEvent;
-	import com.rightisleft.models.ContenderVOs;
-	import com.rightisleft.models.GameOptionsVOs;
+	import com.rightisleft.models.ContenderModel;
+	import com.rightisleft.models.GameOptionsModel;
 	import com.rightisleft.views.LevelUIView;
 	
 	import flash.display.Bitmap;
@@ -18,7 +18,7 @@ package com.rightisleft.controllers
 		
 		private var _parent:DisplayObjectContainer;
 		private var _view:LevelUIView;
-		private var _gameOptions:GameOptionsVOs;
+		private var _gameOptions:GameOptionsModel;
 		private var _imgLoader:ImageLoadController;
 		
 		public function LevelController(parent:DisplayObjectContainer, view:LevelUIView):void {
@@ -58,18 +58,18 @@ package com.rightisleft.controllers
 			}			
 		}
 		
-		public function init(cvos:ContenderVOs):void 
+		public function init(cmodel:ContenderModel):void 
 		{
-			_gameOptions = cvos.options;
+			_gameOptions = cmodel.options;
 			
-			_view.init(GameOptionsVOs.MODES);
+			_view.init(GameOptionsModel.MODES);
 			
 			for each(var tf:TextField in _view.rows)
 			{
 				tf.addEventListener(MouseEvent.CLICK, onClick);
 			}
 			
-			cvos.addEventListener(GameEvent.EVENT_STATE, onContenderStateChange);
+			cmodel.addEventListener(GameEvent.EVENT_STATE, onContenderStateChange);
 		}
 		
 		private function onContenderStateChange(event:GameEvent):void
@@ -90,17 +90,17 @@ package com.rightisleft.controllers
 		{
 			if(event.keyCode == 49)
 			{
-				_gameOptions.setMode(GameOptionsVOs.MODE_EASY);
+				_gameOptions.setMode(GameOptionsModel.MODE_EASY);
 			}
 			
 			if(event.keyCode == 50)
 			{
-				_gameOptions.setMode(GameOptionsVOs.MODE_MEDIUM);
+				_gameOptions.setMode(GameOptionsModel.MODE_MEDIUM);
 			}
 			
 			if(event.keyCode == 51)
 			{
-				_gameOptions.setMode(GameOptionsVOs.MODE_HARD);
+				_gameOptions.setMode(GameOptionsModel.MODE_HARD);
 			}
 		}
 	

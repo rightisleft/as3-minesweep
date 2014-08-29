@@ -1,8 +1,9 @@
 package com.rightisleft.vos
 {
 	import flash.display.BitmapData;
+	import flash.events.EventDispatcher;
 	
-	public class ContenderVO
+	public class ContenderVO extends EventDispatcher
 	{
 		
 		public static const STATE_LIVE:int = 1;
