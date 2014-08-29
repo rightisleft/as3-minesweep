@@ -27,7 +27,7 @@ package
 		private var _mineSweepController:MineSweepController;
 		private var _contenderModel:ContenderModel;
 		private var _levelController:LevelController;
-		private var _levelUIView:LevelView;
+		private var _levelView:LevelView;
 		private var _titleBar:TopUIController;
 		
 		public function MineSweepContext()
@@ -50,16 +50,16 @@ package
 			
 			_mineSweepController.init(_gridModel, _gridController);		
 			
-			_levelUIView = new LevelView(this);
+			_levelView = new LevelView(this);
 
-			_levelController = new LevelController(this, _levelUIView)
+			_levelController = new LevelController(this, _levelView)
 			
 			_levelController.init(_contenderModel);
 			
 			_levelController.enter();
 			
 			//quick positioning
-			_levelUIView.y = _titleBar.y + _titleBar.height;
+			_levelView.y = _titleBar.y + _titleBar.height;
 			_gridController.y = _titleBar.height + 10;
 			_gridController.y = _titleBar.height + 10;
 		}
