@@ -191,10 +191,16 @@ package com.rightisleft.controllers
 			}
 		}
 		
-		private function onClick(event:MouseEvent):void {
+		private function onClick(event:MouseEvent):void 
+		{
 			var cell:GridCellVO = _gridVOs.getCellByLocalCoardinate(event.localX, event.localY);
+			toggleContender(cell);
+		}
+		
+		private function toggleContender(cell:GridCellVO):void
+		{
 			var cvo:ContenderVO;
-
+			
 			if(cell) 
 			{		
 				cvo = _contenderVOs.getVOByID(cell.id);
@@ -216,7 +222,7 @@ package com.rightisleft.controllers
 			//flag state
 			if(isToggleFlag)
 			{
-								
+				
 				if(oState == ContenderVO.STATE_FLAGGED)
 				{
 					
@@ -233,7 +239,7 @@ package com.rightisleft.controllers
 					newState = ContenderVO.STATE_FLAGGED;
 				}
 			}
-			//clear state
+				//clear state
 			else if(oState == ContenderVO.STATE_LIVE)
 			{
 				if(oState == ContenderVO.STATE_FLAGGED)
@@ -267,21 +273,21 @@ package com.rightisleft.controllers
 				_contenderVOs.flaggedContenders--
 			}
 			
-				
+			
 			//only flood fill of the exposed contender is of type open
 			if(newState)
 			{
 				if(cvo.type == ContenderVO.TYPE_OPEN && newState == ContenderVO.STATE_CLEARED) {
 					_gridView.lock();
-						floodFill(cvo, ['type', ContenderVO.TYPE_OPEN, 'state', ContenderVO.STATE_LIVE], ContenderVO.STATE_CLEARED, 'state', _contenderController.paint);
+						clearOpenFlood(cvo, _contenderController.paint);
 					_gridView.unlock();
 				} else {
 					cvo.state = newState;
 					_contenderController.paint(cvo);
 				}
 			}
-
-			_contenderController.checkFlags(cvo)			
+			
+			_contenderController.checkFlags(cvo)	
 		}
 		
 		//multi property checking for a boundry fill
@@ -290,45 +296,38 @@ package com.rightisleft.controllers
 		private var _nextcontender:ContenderVO;
 		private var _nextCell:GridCellVO;
 		
-		public function floodFill(node:ContenderVO, values:Array, replacementValue:int, replacementProperty:String, closure:Function = null):void
+		public function clearOpenFlood(node:ContenderVO, closure:Function = null):void
 		{
 			_nextcontender = null;
-			
-			//multi property checking
-			var index:int
-			while(index < values.length)
+			var canContinue:Boolean = false;
+			if(node.type != ContenderVO.TYPE_MINE && node.state == ContenderVO.STATE_LIVE)
 			{
-				var currentProperty:String = values[index++]
-				var currentValue:int = values[index++]
-				
-				//exit function if netxt-node is already painted, exit of first node doesnt match
-				if(!node || node[replacementProperty] == replacementValue || node[currentProperty] != currentValue)
-				{
-					return;
-				}
+				node.state = ContenderVO.STATE_CLEARED
+				canContinue = (node.type != ContenderVO.TYPE_RISKY); //we want to show the 4 non-mine corners of an open tile
 			}
-			
-			//set value  & render
-			node[replacementProperty] = replacementValue;
+
 			if(closure)
 			{
 				closure(node);	
 			}
 			
 			//check neighbors
-			for each(var direction:String in _directions) 
+			if(canContinue)
 			{
-				_nextCell = _gridVOs.getNieghborCellByDirection(node.id, direction)
-					
-				if(_nextCell)
+				for each(var direction:String in _directions) 
 				{
-					_nextcontender = _contenderVOs.getVOByID(_nextCell.id); 
-					if(_nextcontender) 
+					_nextCell = _gridVOs.getNieghborCellByDirection(node.id, direction)
+					
+					if(_nextCell)
 					{
-						floodFill(_nextcontender, values, replacementValue, replacementProperty, closure);	
+						_nextcontender = _contenderVOs.getVOByID(_nextCell.id); 
+						if(_nextcontender) 
+						{
+							clearOpenFlood(_nextcontender, closure);	
+						}
 					}
-				}
-			}			
+				}		
+			}
 		}
 		
 		private function onGameEvent(event:GameEvent):void
