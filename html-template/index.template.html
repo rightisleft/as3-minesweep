@@ -43,6 +43,7 @@
             var xiSwfUrlStr = "${expressInstallSwf}";
             var flashvars = {};
             var params = {};
+            var cacheBuster = parseInt( Math.random() * 10000000000 );
             params.quality = "high";
             params.bgcolor = "${bgcolor}";
             params.allowscriptaccess = "sameDomain";
@@ -52,7 +53,7 @@
             attributes.name = "${application}";
             attributes.align = "middle";
             swfobject.embedSWF(
-                "${swf}.swf", "flashContent", 
+                "${swf}.swf" + '?'+ cacheBuster, "flashContent", 
                 "${width}", "${height}", 
                 swfVersionStr, xiSwfUrlStr, 
                 flashvars, params, attributes);

@@ -43,6 +43,7 @@
             var xiSwfUrlStr = "playerProductInstall.swf";
             var flashvars = {};
             var params = {};
+            var cacheBuster = parseInt( Math.random() * 10000000000 );
             params.quality = "high";
             params.bgcolor = "#e6e6e6";
             params.allowscriptaccess = "sameDomain";
@@ -52,7 +53,7 @@
             attributes.name = "MineSweepContext";
             attributes.align = "middle";
             swfobject.embedSWF(
-                "MineSweepContext.swf", "flashContent", 
+                "MineSweepContext.swf" + '?'+ cacheBuster, "flashContent", 
                 "800", "600", 
                 swfVersionStr, xiSwfUrlStr, 
                 flashvars, params, attributes);
