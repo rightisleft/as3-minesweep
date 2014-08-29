@@ -3,7 +3,7 @@ package com.rightisleft.controllers
 	import com.rightisleft.events.GameEvent;
 	import com.rightisleft.models.ContenderModel;
 	import com.rightisleft.models.GridModel;
-	import com.rightisleft.views.GridView;
+	import com.rightisleft.views.GridController;
 	import com.rightisleft.vos.ContenderVO;
 	import com.rightisleft.vos.GridCellVO;
 	
@@ -17,7 +17,7 @@ package com.rightisleft.controllers
 		//members objects
 		private var _contenderModel:ContenderModel
 		
-		private var _gridView:GridView;
+		private var _gridController:GridController;
 		private var _gridModel:GridModel;
 		
 		private var _parent:DisplayObjectContainer;
@@ -28,7 +28,7 @@ package com.rightisleft.controllers
 			_contenderModel = cmodel;
 			_parent = parent;
 			
-			//thise are state change listeners - do not remove since this will add the grid to the stage
+			//this isa state change listeners - do not remove since this will add the grid to the stage
 			_contenderModel.addEventListener(GameEvent.EVENT_STATE, onGameEvent);
 		}
 		
@@ -37,42 +37,44 @@ package com.rightisleft.controllers
 		{
 			_parent.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			_parent.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-			_gridView.addEventListener(MouseEvent.CLICK, onClick);
+			_gridController.addEventListener(MouseEvent.CLICK, onClick);
 		}
 		
 		private function turnOffPlayListeners():void
 		{			
 			_parent.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			_parent.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-			_gridView.removeEventListener(MouseEvent.CLICK, onClick);
+			_gridController.removeEventListener(MouseEvent.CLICK, onClick);
 		}
 		
-		public function init(gridVOs:GridModel, gridView:GridView):void {
+		public function init(gridModel:GridModel, gridController:GridController):void {
 			
-			_gridView = gridView;
-			_gridModel = gridVOs;
+			_gridController = gridController;
+			_gridModel = gridModel;
 			
-			_contenderController = new ContenderController(_contenderModel);
+			_contenderController = new ContenderController();
+			_contenderController.init(_contenderModel);
 		}
 				
 		public function exit():void {
 			
 			turnOffPlayListeners();
 			
-			_parent.removeChild(_gridView);
+			_parent.removeChild(_gridController);
 			
 			_gridModel.destroy();	
-			_gridView.destroy();			
+			_gridController.destroy();			
 			_contenderModel.destroy();
 		}
 		
 		public function enter():void {
 			
-			_gridView.init();
 
 			_gridModel.init( _contenderModel.options.board.columns, _contenderModel.options.board.rows, _contenderModel.options.board.height, _contenderModel.options.board.width)
 
-			_gridView.lock();
+			_gridController.init(_gridModel);
+
+			_gridController.lock();
 			
 			//Create & Bind GridCells to contenders
 			for each (var cell:GridCellVO in _gridModel.collection) 
@@ -81,7 +83,7 @@ package com.rightisleft.controllers
 				
 				contender.id = cell.id;
 				contender.addUpdateHanlder( onBmpd )
-				cell.addUpdateHanlder( _gridView.updateCell );
+				cell.addUpdateHanlder( _gridController.updateCell );
 					
 				contender.width = _contenderModel.options.board.width;
 				contender.height = _contenderModel.options.board.height;
@@ -91,29 +93,29 @@ package com.rightisleft.controllers
 				_contenderController.paint(contender);
 			}
 			
-			_gridView.unlock();
+			_gridController.unlock();
 					
-			_parent.addChild(_gridView);
+			_parent.addChild(_gridController);
 			_parent.stage.focus = _parent.stage
-			_gridView.x = (_gridView.stage.stageWidth * .5) - (_gridModel.gridWidth * .5);
+			_gridController.x = (_gridController.stage.stageWidth * .5) - (_gridModel.gridWidth * .5);
 			
 			turnOnPlayListeners();
 		}
 		
 		//cheat
 		public function showAll():void {
-			_gridView.lock();
+			_gridController.lock();
 			for each(var acontender:ContenderVO in _contenderModel.contenders)
 			{
 				acontender.state = ContenderVO.STATE_CLEARED;
 				_contenderController.paint(acontender);
 			}
-			_gridView.unlock();
+			_gridController.unlock();
 		}
 		
 		private function showRemainingMines():void
 		{
-			_gridView.lock();
+			_gridController.lock();
 			for each(var acontender:ContenderVO in _contenderModel.mines)
 			{
 				if(acontender.type == ContenderVO.TYPE_MINE && acontender.state != ContenderVO.STATE_FLAGGED)
@@ -122,7 +124,7 @@ package com.rightisleft.controllers
 					_contenderController.paint(acontender);
 				}
 			}
-			_gridView.unlock();
+			_gridController.unlock();
 		}
 		
 		private function onBmpd(contenderVO:ContenderVO):void
@@ -272,9 +274,9 @@ package com.rightisleft.controllers
 			if(newState)
 			{
 				if(cvo.type == ContenderVO.TYPE_OPEN && newState == ContenderVO.STATE_CLEARED) {
-					_gridView.lock();
+					_gridController.lock();
 						clearOpenFlood(cvo, _contenderController.paint);
-					_gridView.unlock();
+					_gridController.unlock();
 				} else {
 					cvo.state = newState;
 					_contenderController.paint(cvo);
@@ -336,7 +338,7 @@ package com.rightisleft.controllers
 				case GameEvent.RESULT_PLAYER_WON:
 					showRemainingMines();
 					turnOffPlayListeners();
-					_gridView.addEventListener(MouseEvent.CLICK, onGotoLevelMenu);
+					_gridController.addEventListener(MouseEvent.CLICK, onGotoLevelMenu);
 					break;
 				case GameEvent.RESULT_NEW:
 					exit();
@@ -350,7 +352,7 @@ package com.rightisleft.controllers
 		
 		private function onGotoLevelMenu(e:MouseEvent):void
 		{
-			_gridView.removeEventListener(MouseEvent.CLICK, onGotoLevelMenu);
+			_gridController.removeEventListener(MouseEvent.CLICK, onGotoLevelMenu);
 			_contenderModel.newGame();
 		}
 		

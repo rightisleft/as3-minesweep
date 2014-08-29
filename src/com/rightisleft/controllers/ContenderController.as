@@ -19,9 +19,8 @@ package com.rightisleft.controllers
 		private var _textHash:Dictionary = new Dictionary();
 		private var _bevelFilter:BevelFilter;
 		
-		public function ContenderController(model:ContenderModel)
+		public function ContenderController()
 		{
-			_contenderModel = model;
 
 			_textField = new TextField();
 			new GenericTextController('Akz', 10, 0x000000).setText('', _textField);
@@ -30,6 +29,11 @@ package com.rightisleft.controllers
 			_bevelFilter.blurX = 2;
 			_bevelFilter.blurY = 2;
 			_bevelFilter.strength = .1
+		}
+		
+		public function init(model:ContenderModel):void
+		{
+			_contenderModel = model;
 		}
 		
 		public function paint(vo:ContenderVO):void 

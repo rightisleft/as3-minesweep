@@ -1,5 +1,6 @@
 package com.rightisleft.views
 {
+	import com.rightisleft.models.GridModel;
 	import com.rightisleft.vos.GridCellVO;
 	
 	import flash.display.Bitmap;
@@ -10,17 +11,19 @@ package com.rightisleft.views
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
 
-	public class GridView extends Sprite
+	public class GridController extends Sprite
 	{
-		private var _bmpContainer:Bitmap;
+		private var _view:Bitmap;
 		private var _bmpData:BitmapData;
 		private var _bytes:ByteArray;
 		private var _rect:Rectangle;
 		private var _point:Point;
 		private var _parent:DisplayObjectContainer;
+		private var _model:GridModel;
 		
-		public function GridView(parent:DisplayObjectContainer)
+		public function GridController(parent:DisplayObjectContainer, view:Bitmap)
 		{
+			_view = view;
 			_rect = new Rectangle();
 			_bytes = new ByteArray();
 			_point = new Point();
@@ -38,10 +41,12 @@ package com.rightisleft.views
 			_bmpData.unlock();
 		}
 		
-		public function init():void {	
+		public function init(model:GridModel):void {
+			_model = model;
+			
 			_bmpData = new BitmapData(_parent.stage.stageWidth, _parent.stage.stageHeight, true, 0x00FF3366);			
-			_bmpContainer = new Bitmap(_bmpData);
-			this.addChild(_bmpContainer);
+			_view.bitmapData = _bmpData;
+			this.addChild(_view);
 		}
 		
 		public function updateCell(cell:GridCellVO):void {		

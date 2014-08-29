@@ -6,9 +6,10 @@ package
 	import com.rightisleft.models.ContenderModel;
 	import com.rightisleft.models.GameOptionsModel;
 	import com.rightisleft.models.GridModel;
-	import com.rightisleft.views.GridView;
+	import com.rightisleft.views.GridController;
 	import com.rightisleft.views.LevelUIView;
 	
+	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -19,8 +20,9 @@ package
 	{				
 		private var _gameModel:GameOptionsModel;
 
-		private var _gridVO:GridModel;
-		private var _gridView:GridView;
+		private var _gridModel:GridModel;
+		private var _gridController:GridController;
+		private var _gridView:Bitmap;
 
 		private var _mineSweepController:MineSweepController;
 		private var _contenderModel:ContenderModel;
@@ -35,10 +37,10 @@ package
 
 			//Class of static config options
 			_gameModel = new GameOptionsModel();
-						
-			_gridView = new GridView(this);			
-			
-			_gridVO = new GridModel();	
+				
+			_gridView = new Bitmap();
+			_gridModel = new GridModel();	
+			_gridController = new GridController(this, _gridView);						
 			
 			_contenderModel = new ContenderModel(_gameModel);
 			
@@ -46,7 +48,7 @@ package
 			
 			_mineSweepController = new MineSweepController(this, _contenderModel);
 			
-			_mineSweepController.init(_gridVO, _gridView);		
+			_mineSweepController.init(_gridModel, _gridController);		
 			
 			_levelUIView = new LevelUIView(this);
 
@@ -58,8 +60,8 @@ package
 			
 			//quick positioning
 			_levelUIView.y = _titleBar.y + _titleBar.height;
-			_gridView.y = _titleBar.height + 10;
-			_gridView.y = _titleBar.height + 10;
+			_gridController.y = _titleBar.height + 10;
+			_gridController.y = _titleBar.height + 10;
 		}
 	}
 }
