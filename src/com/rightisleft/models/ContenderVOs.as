@@ -2,6 +2,7 @@ package com.rightisleft.models
 {
 	import com.rightisleft.events.GameEvent;
 	import com.rightisleft.vos.ContenderVO;
+	import com.rightisleft.vos.GridCellVO;
 	
 	import flash.events.EventDispatcher;
 	import flash.utils.Dictionary;
@@ -25,6 +26,33 @@ package com.rightisleft.models
 		
 		public var incrementHandlers:Array = []		
 
+		public function generateMines(cell:GridCellVO, closure:Function):void
+		{
+			//Select contenders to be hidden mines
+			var acontender:ContenderVO;
+			for (var i:int = 0; i < options.board.mineCount; i++) 
+			{
+				acontender = getRandomVO();
+				
+				//cant be a previously placed mine
+				//cent be the first selected square
+				
+				while(acontender.type == ContenderVO.TYPE_MINE) {
+					acontender = getRandomVO();
+					if(cell && cell.id == acontender.id)
+					{
+						acontender = getRandomVO();
+					}
+				}
+				
+				acontender.type = ContenderVO.TYPE_MINE;
+				collectionOfMines.push(acontender);
+				if(closure)
+				{
+					closure(acontender);
+				}
+			}
+		}
 		
 		public function getRandomVO():ContenderVO 
 		{

@@ -92,23 +92,7 @@ package com.rightisleft.controllers
 			}
 			
 			_gridView.unlock();
-			
-			//Select contenders to be hidden mines
-			var acontender:ContenderVO;
-			for (var i:int = 0; i < _contenderVOs.options.board.mineCount; i++) 
-			{
-				acontender = _contenderVOs.getRandomVO();
-				while(acontender.type == ContenderVO.TYPE_MINE) {
-					acontender = _contenderVOs.getRandomVO();
-				}
-				
-				acontender.type = ContenderVO.TYPE_MINE;
-				alertNeghborcontenders(acontender);
-				
-				_contenderVOs.collectionOfMines.push(acontender); 
-			}
-			
-			
+					
 			_parent.addChild(_gridView);
 			_parent.stage.focus = _parent.stage
 			_gridView.x = (_gridView.stage.stageWidth * .5) - (_gridVOs.gridWidth * .5);
@@ -148,7 +132,7 @@ package com.rightisleft.controllers
 			cell.updated();
 		}
 		
-		private function alertNeghborcontenders(contender:ContenderVO):void
+		private function alertNeighbors(contender:ContenderVO):void
 		{
 			var nextCell:GridCellVO; 
 			var originCell:GridCellVO = _gridVOs.getCellByID(contender.id);
@@ -193,17 +177,27 @@ package com.rightisleft.controllers
 		
 		private function onClick(event:MouseEvent):void 
 		{
-			var cell:GridCellVO = _gridVOs.getCellByLocalCoardinate(event.localX, event.localY);
-			toggleContender(cell);
+			var clickedCell:GridCellVO = _gridVOs.getCellByLocalCoardinate(event.localX, event.localY);
+			validateBoardMines(clickedCell)			
+			toggleContender(clickedCell);
 		}
 		
-		private function toggleContender(cell:GridCellVO):void
+		private function validateBoardMines(clickedCell:GridCellVO):void
+		{
+			//is new board? 
+			if(_contenderVOs.collectionOfMines.length != _contenderVOs.options.board.mineCount)
+			{
+				_contenderVOs.generateMines(clickedCell, alertNeighbors);
+			}
+		}
+		
+		private function toggleContender(clickedCell:GridCellVO):void
 		{
 			var cvo:ContenderVO;
 			
-			if(cell) 
+			if(clickedCell) 
 			{		
-				cvo = _contenderVOs.getVOByID(cell.id);
+				cvo = _contenderVOs.getVOByID(clickedCell.id);
 			}
 			
 			if(!cvo)
