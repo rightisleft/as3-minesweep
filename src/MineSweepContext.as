@@ -59,6 +59,7 @@ package
 			//quick positioning
 			_levelUIView.y = _titleBar.y + _titleBar.height;
 			_gridView.y = _titleBar.height + 10;
+			_gridView.y = _titleBar.height + 10;
 		}
 	}
 }

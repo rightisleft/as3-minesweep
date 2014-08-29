@@ -24,7 +24,7 @@ package com.rightisleft.views
 		{
 			_leveltext = [];
 			
-			_ctrl = new GenericTextController('Akz', 20, 0xFFFFFF);
+			_ctrl = new GenericTextController('Akz', 20, 0x505050);
 			
 			for(var i:int = 0; i < names.length; i++)
 			{
