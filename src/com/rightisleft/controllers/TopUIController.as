@@ -22,7 +22,7 @@ package com.rightisleft.controllers
 		
 		public function TopUIController(parent:DisplayObjectContainer, contenders:ContenderVOs)
 		{
-			_ctrl = new GenericTextController("Akz", 16, 0xFFFFFF)
+			_ctrl = new GenericTextController("Akz", 16, 0x505050)
 			_ctrl.setText('MineSweep', _title)
 				
 			_contenderVOs = contenders;

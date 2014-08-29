@@ -5,8 +5,8 @@ package com.rightisleft.controllers
 	import com.rightisleft.models.GameOptionsVOs;
 	import com.rightisleft.views.LevelUIView;
 	
+	import flash.display.Bitmap;
 	import flash.display.DisplayObjectContainer;
-	import flash.events.EventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
@@ -19,12 +19,21 @@ package com.rightisleft.controllers
 		private var _parent:DisplayObjectContainer;
 		private var _view:LevelUIView;
 		private var _gameOptions:GameOptionsVOs;
-
-		public var dispatcher:EventDispatcher = new EventDispatcher();
+		private var _imgLoader:ImageLoadController;
 		
 		public function LevelController(parent:DisplayObjectContainer, view:LevelUIView):void {
 			_parent = parent;
 			_view = view;			
+			
+			//init key command graphic
+			_imgLoader = new ImageLoadController('flagging_instructions.png', onLegendLoaded);
+		}	
+		
+		private function onLegendLoaded(item:Bitmap):void
+		{
+			item.y = _parent.y - _view.y + _parent.stage.stageHeight - item.height;
+			item.x = (_parent.stage.stageWidth * .5) - (item.width * .5);
+			_view.addChild(item);
 		}
 		
 		public function enter():void 
