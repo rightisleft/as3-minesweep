@@ -41,7 +41,7 @@ package com.rightisleft.controllers
 			_parent.addChild(_view);
 			_parent.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 
-			for each (var tf:TextField in _leveltext) 
+			for each(var tf:TextField in _view.rows)
 			{
 				tf.addEventListener(MouseEvent.CLICK, onClick);
 			}
@@ -52,10 +52,10 @@ package com.rightisleft.controllers
 			_parent.removeChild(_view);	
 			_parent.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 
-			for each (var tf:TextField in _leveltext) 
+			for each(var tf:TextField in _view.rows)
 			{
 				tf.removeEventListener(MouseEvent.CLICK, onClick);
-			}			
+			}		
 		}
 		
 		public function init(cmodel:ContenderModel):void 
@@ -63,13 +63,8 @@ package com.rightisleft.controllers
 			_gameOptions = cmodel.options;
 			
 			_view.init(GameOptionsModel.MODES);
-			
-			for each(var tf:TextField in _view.rows)
-			{
-				tf.addEventListener(MouseEvent.CLICK, onClick);
-			}
-			
-			cmodel.addEventListener(GameEvent.EVENT_STATE, onContenderStateChange);
+						
+			cmodel.addEventListener(GameEvent.EVENT_STATE, onContenderStateChange);			
 		}
 		
 		private function onContenderStateChange(event:GameEvent):void
