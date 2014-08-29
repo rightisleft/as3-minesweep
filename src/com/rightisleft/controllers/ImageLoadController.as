@@ -23,11 +23,10 @@ package com.rightisleft.controllers
 			
 			_urlRequest = new URLRequest(_url)
 			_loader = new Loader()
-			_context = new LoaderContext(false); //local web server - again not a production solution
 			
 			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onComplete);
 			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError);
-			_loader.load(_urlRequest, _context);	
+			_loader.load(_urlRequest);	
 		}
 		
 		private function onComplete(event:Event):void
