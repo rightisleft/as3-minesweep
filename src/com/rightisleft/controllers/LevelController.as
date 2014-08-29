@@ -3,7 +3,7 @@ package com.rightisleft.controllers
 	import com.rightisleft.events.GameEvent;
 	import com.rightisleft.models.ContenderModel;
 	import com.rightisleft.models.GameOptionsModel;
-	import com.rightisleft.views.LevelUIView;
+	import com.rightisleft.views.LevelView;
 	
 	import flash.display.Bitmap;
 	import flash.display.DisplayObjectContainer;
@@ -17,11 +17,11 @@ package com.rightisleft.controllers
 		private var _leveltext:Array;
 		
 		private var _parent:DisplayObjectContainer;
-		private var _view:LevelUIView;
+		private var _view:LevelView;
 		private var _gameOptions:GameOptionsModel;
 		private var _imgLoader:ImageLoadController;
 		
-		public function LevelController(parent:DisplayObjectContainer, view:LevelUIView):void {
+		public function LevelController(parent:DisplayObjectContainer, view:LevelView):void {
 			_parent = parent;
 			_view = view;			
 			

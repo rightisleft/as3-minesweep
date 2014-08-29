@@ -6,11 +6,11 @@ package com.rightisleft.views
 	import flash.display.Sprite;
 	import flash.text.TextField;
 
-	public class LevelUIView extends Sprite
+	public class LevelView extends Sprite
 	{
 		private var _parent:DisplayObjectContainer;
 
-		public function LevelUIView(parent:DisplayObjectContainer)
+		public function LevelView(parent:DisplayObjectContainer)
 		{
 			_parent = parent;
 		}

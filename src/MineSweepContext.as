@@ -7,7 +7,7 @@ package
 	import com.rightisleft.models.GameOptionsModel;
 	import com.rightisleft.models.GridModel;
 	import com.rightisleft.views.GridController;
-	import com.rightisleft.views.LevelUIView;
+	import com.rightisleft.views.LevelView;
 	
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
@@ -27,7 +27,7 @@ package
 		private var _mineSweepController:MineSweepController;
 		private var _contenderModel:ContenderModel;
 		private var _levelController:LevelController;
-		private var _levelUIView:LevelUIView;
+		private var _levelUIView:LevelView;
 		private var _titleBar:TopUIController;
 		
 		public function MineSweepContext()
@@ -50,7 +50,7 @@ package
 			
 			_mineSweepController.init(_gridModel, _gridController);		
 			
-			_levelUIView = new LevelUIView(this);
+			_levelUIView = new LevelView(this);
 
 			_levelController = new LevelController(this, _levelUIView)
 			
