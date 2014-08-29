@@ -16,7 +16,7 @@ package com.rightisleft.controllers
 					fontStyle="Bold", 
 			    	advancedAntiAliasing="true", 
 			    	embedAsCFF="false")]
-			private var myEmbeddedFont:Class;
+			private static const myEmbeddedFont:Class;
 			
 			public function GenericTextController(font:String = "Akz", size:int = 16, color:uint = 0x00333333)
 			{
