@@ -1,6 +1,7 @@
 package com.rightisleft.controllers
 {
 	import com.rightisleft.events.GameEvent;
+	import com.rightisleft.events.GridEvent;
 	import com.rightisleft.models.ContenderModel;
 	import com.rightisleft.models.GridModel;
 	import com.rightisleft.views.GridController;
@@ -37,14 +38,14 @@ package com.rightisleft.controllers
 		{
 			_parent.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			_parent.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-			_gridController.addEventListener(MouseEvent.CLICK, onClick);
+			_gridModel.addEventListener(GridEvent.CELL_CLICKED, onClick);
 		}
 		
 		private function turnOffPlayListeners():void
 		{			
 			_parent.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			_parent.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-			_gridController.removeEventListener(MouseEvent.CLICK, onClick);
+			_gridModel.removeEventListener(GridEvent.CELL_CLICKED, onClick);
 		}
 		
 		public function init(gridModel:GridModel, gridController:GridController):void {
@@ -59,9 +60,7 @@ package com.rightisleft.controllers
 		public function exit():void {
 			
 			turnOffPlayListeners();
-			
-			_parent.removeChild(_gridController);
-			
+						
 			_gridModel.destroy();	
 			_gridController.destroy();			
 			_contenderModel.destroy();
@@ -95,9 +94,8 @@ package com.rightisleft.controllers
 			
 			_gridController.unlock();
 					
-			_parent.addChild(_gridController);
 			_parent.stage.focus = _parent.stage
-			_gridController.x = (_gridController.stage.stageWidth * .5) - (_gridModel.gridWidth * .5);
+
 			
 			turnOnPlayListeners();
 		}
@@ -177,9 +175,9 @@ package com.rightisleft.controllers
 			}
 		}
 		
-		private function onClick(event:MouseEvent):void 
+		private function onClick(event:GridEvent):void 
 		{
-			var clickedCell:GridCellVO = _gridModel.getCellByLocalCoardinate(event.localX, event.localY);
+			var clickedCell:GridCellVO = event.result as GridCellVO;
 			validateBoardMines(clickedCell)			
 			toggleContender(clickedCell);
 		}
@@ -338,7 +336,7 @@ package com.rightisleft.controllers
 				case GameEvent.RESULT_PLAYER_WON:
 					showRemainingMines();
 					turnOffPlayListeners();
-					_gridController.addEventListener(MouseEvent.CLICK, onGotoLevelMenu);
+					_gridModel.addEventListener(GridEvent.CELL_CLICKED, onGotoLevelMenu);
 					break;
 				case GameEvent.RESULT_NEW:
 					exit();
@@ -350,9 +348,9 @@ package com.rightisleft.controllers
 			}
 		}
 		
-		private function onGotoLevelMenu(e:MouseEvent):void
+		private function onGotoLevelMenu(e:GridEvent):void
 		{
-			_gridController.removeEventListener(MouseEvent.CLICK, onGotoLevelMenu);
+			_gridModel.removeEventListener(GridEvent.CELL_CLICKED, onGotoLevelMenu);
 			_contenderModel.newGame();
 		}
 		

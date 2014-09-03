@@ -9,7 +9,6 @@ package
 	import com.rightisleft.views.GridController;
 	import com.rightisleft.views.LevelView;
 	
-	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -22,7 +21,7 @@ package
 
 		private var _gridModel:GridModel;
 		private var _gridController:GridController;
-		private var _gridView:Bitmap;
+		private var _gridView:Sprite;
 
 		private var _mineSweepController:MineSweepController;
 		private var _contenderModel:ContenderModel;
@@ -38,9 +37,9 @@ package
 			//Class of static config options
 			_gameModel = new GameOptionsModel();
 				
-			_gridView = new Bitmap();
+			_gridView = new Sprite();
 			_gridModel = new GridModel();	
-			_gridController = new GridController(this, _gridView);						
+			_gridController = new GridController(this, _gridView);	
 			
 			_contenderModel = new ContenderModel(_gameModel);
 			
@@ -60,8 +59,7 @@ package
 			
 			//quick positioning
 			_levelView.y = _titleBar.y + _titleBar.height;
-			_gridController.y = _titleBar.height + 10;
-			_gridController.y = _titleBar.height + 10;
+			_gridView.y = _titleBar.height + 10;
 		}
 	}
 }

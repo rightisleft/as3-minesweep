@@ -1,5 +1,6 @@
 package com.rightisleft.models
 {	
+	import com.rightisleft.events.GridEvent;
 	import com.rightisleft.vos.GridCellVO;
 	
 	import flash.events.EventDispatcher;
@@ -26,6 +27,11 @@ package com.rightisleft.models
 		public function get gridWidth():int
 		{
 			return _cellWidth * _columnCount
+		}
+		
+		public function click(cell:GridCellVO):void
+		{
+			this.dispatchEvent(new GridEvent(GridEvent.CELL_CLICKED, cell) );
 		}
 		
 		public function init(columns:int, rows:int, cellHeight:int, cellWidth:int):void {

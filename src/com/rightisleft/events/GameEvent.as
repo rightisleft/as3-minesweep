@@ -12,7 +12,7 @@ package com.rightisleft.events
 		public static const RESULT_CONTENDER_WON:String = 'You Lost!';
 		public static const RESULT_PLAYER_WON:String = 'You Won!';
 		public static const RESULT_RESTART:String = 'restart!';
-				
+		
 		public var result:Object;
 		
 		public function GameEvent(type:String, result:Object, bubbles:Boolean=false, cancelable:Boolean=false)
