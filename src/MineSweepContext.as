@@ -6,7 +6,7 @@ package
 	import com.rightisleft.models.ContenderModel;
 	import com.rightisleft.models.GameOptionsModel;
 	import com.rightisleft.models.GridModel;
-	import com.rightisleft.views.GridController;
+	import com.rightisleft.controllers.GridController;
 	import com.rightisleft.views.LevelView;
 	
 	import flash.display.Sprite;

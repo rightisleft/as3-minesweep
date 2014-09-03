@@ -1,4 +1,4 @@
-package com.rightisleft.views
+package com.rightisleft.controllers
 {
 	import com.rightisleft.models.GridModel;
 	import com.rightisleft.vos.GridCellVO;

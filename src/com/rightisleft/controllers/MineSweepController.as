@@ -4,13 +4,11 @@ package com.rightisleft.controllers
 	import com.rightisleft.events.GridEvent;
 	import com.rightisleft.models.ContenderModel;
 	import com.rightisleft.models.GridModel;
-	import com.rightisleft.views.GridController;
 	import com.rightisleft.vos.ContenderVO;
 	import com.rightisleft.vos.GridCellVO;
 	
 	import flash.display.DisplayObjectContainer;
 	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
 
 
 	public class MineSweepController
