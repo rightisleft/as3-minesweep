@@ -110,13 +110,20 @@ package com.rightisleft.models
 		}	
 		
 		public function getCellByLocalCoardinate(x:int, y:int):GridCellVO {
-			for each (var cell:GridCellVO in collection) 
+			
+			var rowCell:GridCellVO
+			var colCell:GridCellVO
+			for each(var column:Vector.<GridCellVO> in _columns)
 			{
-				if(cell.x <= x && x <= (cell.x + cell.width) )
+				rowCell = column[0] as GridCellVO;
+				if(rowCell.y <= y && y <= (rowCell.y + rowCell.height) )
 				{
-					if(y >= cell.y && y <= (cell.y + cell.height) )
+					for each(colCell in column)
 					{
-						return cell;
+						if(x >= colCell.x && x <= (colCell.x + colCell.width) )
+						{
+							return colCell;
+						}
 					}
 				}
 			}
