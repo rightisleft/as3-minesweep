@@ -1,7 +1,7 @@
 as3_minesweep
 =============
 
-http://rightisleft.github.io/as3_minesweep/bin-release/MineSweepContext.html
+http://rightisleft.github.io/as3-minesweep/
 
 An ActionScript 3 implementation of the classic game minesweep. 
 
